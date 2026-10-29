@@ -1,16 +1,22 @@
-# React + Vite
+# Projeto Primora - Painel de Inteligência Multi-tenant
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Este repositório contém a Sprint 1 do projeto integrador **Bolsa Futuro Digital**, focado na construção da estrutura visual e navegação de um painel de inteligência multi-tenant para a empresa parceira Primora.
 
-Currently, two official plugins are available:
+## 👥 Integrantes da Equipe
+* Maria Luiza (@marilluantunes)
+* Atila Kenoly (@Hirahoshi)
+* Augusto
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🛠️ Tecnologias Utilizadas
+* ReactJS
+* Vite
+* Ant Design
+* React Router
 
-## React Compiler
+## 🚀 Como executar o projeto localmente
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Para rodar esta aplicação na sua máquina, certifique-se de ter o **Node.js** instalado e siga os passos abaixo:
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+**1. Clone o repositório:**
+```bash
+git clone [https://github.com/marilluantunes/painel-multitenant.git](https://github.com/marilluantunes/painel-multitenant.git)
