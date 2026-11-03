@@ -86,6 +86,7 @@ src/
 └── components/             # Telas do sistema separadas por pastas 
     ├── visaogeral/
     │   └── VisaoGeral.jsx   # Tela de Visão Geral
+    │   └── UnidadeCard.jsx  # Cartão com os indicadores de cada unidade
     ├── comparativo/
     │   └── Comparativo.jsx  # Tela de Comparativo
     └── historico/
