@@ -15,7 +15,7 @@ Painel web de inteligência multi-tenant desenvolvido como parte da Sprint 1 do 
 ## Tecnologias
 
 - React 19
-- Vite 8
+- Vite 7
 - Ant Design 6 e Ant Design Icons
 - React Router 7
 - Oxlint
@@ -72,15 +72,24 @@ npm run dev
 
 ```text
 src/
-├── App.jsx                 # Configura o roteador da aplicação
-├── main.jsx                # Ponto de entrada do React
-├── index.css               # Estilos globais e regras responsivas
-├── App.css                 # Estilos adicionais
+├── App.jsx                 # Configura o BrowserRouter da aplicação
+├── main.jsx                # Ponto de entrada do React e importação do Ant Design
+├── index.css               # Estilos globais (reset de margens e configuração da tela cheia)
+├── App.css                 # Estilos adicionais (mantido vazio para padrão do Vite)
+│
 ├── layout/
-│   └── MainLayout.jsx       # Cabeçalho, menu e área de conteúdo
-└── routes/
-	└── AppRoutes.jsx       # Rotas, telas e dados demonstrativos
-```
+│   └── MainLayout.jsx       # Cabeçalho, menu de navegação e área de conteúdo (Outlet)
+│
+├── routes/
+│   └── AppRoutes.jsx       # Apenas as definições de rotas (conecta URL aos componentes)
+│
+└── components/             # Telas do sistema separadas por pastas 
+    ├── visaogeral/
+    │   └── VisaoGeral.jsx   # Tela de Visão Geral
+    ├── comparativo/
+    │   └── Comparativo.jsx  # Tela de Comparativo
+    └── historico/
+        └── Historico.jsx    # Tela de Histórico
 
 ## Equipe
 
