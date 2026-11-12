@@ -1,28 +1,19 @@
-import dataset from '../data/dataset_painel_multitenant.json'; // Ajuste o caminho conforme o seu projeto
-import Cliente from '../models/Cliente.mjs';
+import { obterArray } from '../../config/api.js';
+import Cliente from '../dominio/Cliente.mjs';
 
 export default class ClienteDAO {
   async listar() {
-    return new Promise((resolve) => {
-      const clientes = dataset.clientes.map(c => new Cliente(c));
-      resolve(clientes);
-    });
+    const registros = await obterArray('/clientes');
+    return registros.map((registro) => new Cliente(registro));
   }
 
   async buscarPorId(id) {
-    return new Promise((resolve) => {
-      const cliente = dataset.clientes.find(c => c.id === id);
-      resolve(cliente ? new Cliente(cliente) : null);
-    });
+    const clientes = await this.listar();
+    return clientes.find((cliente) => cliente.getId() === id) ?? null;
   }
 
   async listarPorUnidade(tenantId) {
-    return new Promise((resolve) => {
-      const clientesFiltrados = dataset.clientes
-        .filter(c => c.tenantId === tenantId)
-        .map(c => new Cliente(c));
-      
-      resolve(clientesFiltrados);
-    });
+    const clientes = await this.listar();
+    return clientes.filter((cliente) => cliente.getTenantId() === tenantId);
   }
 }
