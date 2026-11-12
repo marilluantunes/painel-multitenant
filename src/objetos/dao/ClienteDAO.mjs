@@ -1,5 +1,5 @@
-import dataset from '../data/dataset_painel_multitenant.json'; // Ajuste o caminho conforme o seu projeto
-import Cliente from '../models/Cliente.mjs';
+import dataset from '../../data/dataset_painel_multitenant.json'; // Ajuste o caminho conforme o seu projeto
+import Cliente from '../dominio/Cliente.mjs';
 
 export default class ClienteDAO {
   async listar() {

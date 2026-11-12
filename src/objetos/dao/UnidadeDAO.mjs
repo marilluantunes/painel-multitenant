@@ -1,6 +1,6 @@
 
-import dataset from '../data/dataset_painel_multitenant.json'; // Ajuste o caminho conforme o seu projeto
-import Unidade from '../models/Unidade.mjs';
+import dataset from '../../data/dataset_painel_multitenant.json'; // Ajuste o caminho conforme o seu projeto
+import Unidade from '../dominio/Unidade.mjs';
 
 export default class UnidadeDAO {
   async listar() {
