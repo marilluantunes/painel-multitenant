@@ -1,46 +1,48 @@
 import { Layout, Menu, Typography } from "antd";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { DashboardOutlined, BarChartOutlined, HistoryOutlined } from "@ant-design/icons";
+import { DashboardOutlined, ApartmentOutlined, TeamOutlined } from "@ant-design/icons";
 
-const { Header, Content, Footer } = Layout;
+const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
 
 export default function MainLayout() {
-  // hook para saber em qual página o usuário está
+  // Pega a URL atual para destacar a aba ativa no menu
   const location = useLocation();
 
-  // itens do menu de navegação
+  // Configuração dos itens do menu com links do React Router
   const items = [
     { key: "/visao-geral", icon: <DashboardOutlined />, label: <Link to="/visao-geral">Visão Geral</Link> },
-    { key: "/comparativo", icon: <BarChartOutlined />, label: <Link to="/comparativo">Comparativo</Link> },
-    { key: "/historico", icon: <HistoryOutlined />, label: <Link to="/historico">Histórico</Link> },
+    { key: "/comparativo", icon: <ApartmentOutlined />, label: <Link to="/comparativo">Comparativo entre Unidades</Link> },
+    { key: "/historico", icon: <TeamOutlined />, label: <Link to="/historico">Histórico de Clientes</Link> },
   ];
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <Header style={{ display: "flex", alignItems: "center" }}>
-        <Title level={3} style={{ color: "white", margin: 0, marginRight: 40 }}>
-          Distribuidora Vetor
-        </Title>
-        
-        {/* menu horizontal do Ant Design */}
+      {/* Barra lateral mantida */}
+      <Sider breakpoint="md" collapsedWidth="0" theme="dark">
+        <div style={{ color: "white", padding: 20, fontSize: 20, fontWeight: "bold" }}>
+          PRIMORA
+        </div>
         <Menu
           theme="dark"
-          mode="horizontal"
-          selectedKeys={[location.pathname]} // destaca a aba ativa
+          mode="inline"
+          selectedKeys={[location.pathname]} 
           items={items}
-          style={{ flex: 1, minWidth: 0 }}
         />
-      </Header>
+      </Sider>
 
-      <Content style={{ padding: "24px", background: "#f0f2f5" }}>
-        {/* o Outlet é onde as telas (Visão Geral, etc.) vão aparecer */}
-        <Outlet />
-      </Content>
+      <Layout>
+        <Header style={{ background: "#fff", padding: "0 24px", display: "flex", alignItems: "center" }}>
+          <Title level={4} style={{ margin: 0 }}>
+            Painel de Inteligência Multi-tenant - Distribuidora Vetor
+          </Title>
+        </Header>
 
-      <Footer style={{ textAlign: "center" }}>
-        Protótipo com Dados Fictícios - Desafio 2 (Primora)
-      </Footer>
+        <Content style={{ margin: 24 }}>
+          {/* O Outlet renderiza as telas filhas (Visão Geral, Comparativo, Histórico) */}
+          <Outlet />
+        </Content>
+      </Layout>
     </Layout>
   );
 }
