@@ -74,24 +74,38 @@ npm run dev
 src/
 ├── App.jsx                 # Configura o BrowserRouter da aplicação
 ├── main.jsx                # Ponto de entrada do React e importação do Ant Design
-├── index.css               # Estilos globais (reset de margens e configuração da tela cheia)
-├── App.css                 # Estilos adicionais (mantido vazio para padrão do Vite)
+├── index.css               # Estilos globais (reset de margens)
+├── App.css                 # Estilos adicionais (mantido vazio)
+│
+├── data/
+│   └── dataset_painel_multitenant.json  # Fonte de dados oficial (JSON)
 │
 ├── layout/
-│   └── MainLayout.jsx       # Cabeçalho, menu de navegação e área de conteúdo (Outlet)
+│   └── MainLayout.jsx      # Cabeçalho, menu lateral (Sidebar) e área de conteúdo (Outlet)
 │
 ├── routes/
-│   └── AppRoutes.jsx       # Apenas as definições de rotas (conecta URL aos componentes)
+│   └── AppRoutes.jsx       # Definição das rotas conectando URLs aos componentes
 │
-└── components/             # Telas do sistema separadas por pastas 
-    ├── visaogeral/
-    │   └── VisaoGeral.jsx   # Tela de Visão Geral
-    │   └── UnidadeCard.jsx  # Cartão com os indicadores de cada unidade
-    ├── comparativo/
-    │   └── Comparativo.jsx  # Tela de Comparativo
-    └── historico/
-        └── Historico.jsx    # Tela de Histórico
+├── components/             # Telas e componentes visuais
+│   ├── visaogeral/
+│   │   ├── VisaoGeral.jsx  # Tela principal com filtro e mapeamento dos cartões
+│   │   └── CardUnidade.jsx # Componente reutilizável (Props) com métricas da unidade
+│   ├── comparativo/
+│   │   └── Comparativo.jsx # Tela com a tabela comparativa
+│   └── historico/
+│       └── Historico.jsx   # Tela com a timeline de eventos dos clientes
+│
+└── objetos/                # Camada de modelagem e persistência (OOP)
+    ├── dominio/            # Classes de representação de dados
+    │   ├── Unidade.mjs
+    │   ├── Cliente.mjs
+    │   ├── Evento.mjs
+    │   └── RegistroSaude.mjs
+    └── dao/                # Data Access Objects (Leitura e abstração dos dados)
+        ├── UnidadeDAO.mjs
+        └── ClienteDAO.mjs
 
+```
 
 ## 🚀 Sprint 2 - Componentização e Integração de Dados Estáticos
 
@@ -104,38 +118,24 @@ Nesta segunda sprint, o foco principal foi a evolução do protótipo, substitui
 * **Tela de Comparativo:** Construção de uma tabela de comparação utilizando o componente `Table` do Ant Design. Para suprir a restrição de não utilizar bibliotecas como *Recharts* nesta etapa, desenvolvemos um mock visual de gráfico de barras utilizando o componente `Progress` nativo do Ant Design, acompanhado de alertas (`Alert`) reforçando o caráter acadêmico e fictício dos dados.
 * **Tela de Histórico:** Criação de uma linha do tempo detalhada para o cliente "João Silva" utilizando o componente `Timeline` do Ant Design. Os eventos (compras, suporte, entrega) foram diferenciados visualmente por cores e ícones (`@ant-design/icons`), mantendo a apresentação dos dados diretamente no código, conforme exigido pelos limites da sprint.
   
-# PRIMORA - Painel de Inteligência Multi-tenant
-
-## Projeto Integrador - Bolsa Futuro Digital
-
 ### Sprint 3 - Integração de dados JSON locais
+- Importação e leitura do arquivo `dataset_painel_multitenant.json`.
+- Substituição dos dados estáticos (hardcoded) por renderização dinâmica.
+- Utilização de arrays, funções de alta ordem (`.map()`) e passagem de dados via *props* para os componentes.
+- Mapeamento completo das métricas do JSON (receita, carteira, engajamento, funil, saúde e riscos) nos cartões da Visão Geral.
 
-Projeto desenvolvido utilizando ReactJS, Vite e Ant Design.
+### Sprint 4 - Estados e interatividade
+- Implementação de estados (`useState`) para gerenciar as seleções do usuário sem recarregar a página.
+- **Visão Geral:** Adição de um componente `Select` (Ant Design) para alternar entre as 4 unidades do dataset ou visualizar todas simultaneamente. O layout dos cartões se adapta dinamicamente à escolha.
+- **Histórico:** Adição de um `Select` para filtrar os clientes. A linha do tempo (`Timeline`) e a identificação do cliente são atualizadas dinamicamente com base na escolha, com layout responsivo que centraliza a visualização de um único cliente.
 
-### Tecnologias utilizadas
-- ReactJS
-- Vite
-- JavaScript
-- JSON
-- Ant Design
+### Sprint 5 - Modelagem de domínio, encapsulamento e DAOs
+- Introdução dos conceitos de Programação Orientada a Objetos (OOP) na camada de dados.
+- Criação das classes de domínio (`Unidade`, `Cliente`, `Evento`, `RegistroSaude`) com atributos privados (`#`) e métodos de acesso (getters).
+- Implementação do padrão DAO (Data Access Object) através das classes `UnidadeDAO` e `ClienteDAO`.
+- Os DAOs utilizam métodos assíncronos (`async/await`) e abstraem a leitura do arquivo JSON local, preparando a aplicação para uma futura integração com backend real.
+- Integração inicial do `UnidadeDAO` à tela de Visão Geral utilizando o hook `useEffect` para buscar os dados instanciados.
 
-### Funcionalidades desenvolvidas
-
-1. Visão Geral: apresentação de quatro unidades por meio de cartões dinâmicos.
-2. Comparativo entre Unidades: tabela com indicadores das unidades.
-3. Histórico de Clientes: identificação dos clientes e apresentação dos eventos em Timeline.
-
-### Integração de dados
-
-Arquivo JSON utilizado:
-
-src/data/dataset_painel_multitenant.json
-
-Os dados são importados localmente e apresentados por meio de map(), props e componentes React.
-
-### Sprint 3
-
-Integração de dados locais, renderização dinâmica e componentização.
 
 
 ## Equipe
