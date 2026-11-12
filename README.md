@@ -129,13 +129,30 @@ Nesta segunda sprint, o foco principal foi a evolução do protótipo, substitui
 - **Visão Geral:** Adição de um componente `Select` (Ant Design) para alternar entre as 4 unidades do dataset ou visualizar todas simultaneamente. O layout dos cartões se adapta dinamicamente à escolha.
 - **Histórico:** Adição de um `Select` para filtrar os clientes. A linha do tempo (`Timeline`) e a identificação do cliente são atualizadas dinamicamente com base na escolha, com layout responsivo que centraliza a visualização de um único cliente.
 
-### Sprint 5 - Modelagem de domínio, encapsulamento e DAOs
-- Introdução dos conceitos de Programação Orientada a Objetos (OOP) na camada de dados.
-- Criação das classes de domínio (`Unidade`, `Cliente`, `Evento`, `RegistroSaude`) com atributos privados (`#`) e métodos de acesso (getters).
-- Implementação do padrão DAO (Data Access Object) através das classes `UnidadeDAO` e `ClienteDAO`.
-- Os DAOs utilizam métodos assíncronos (`async/await`) e abstraem a leitura do arquivo JSON local, preparando a aplicação para uma futura integração com backend real.
-- Integração inicial do `UnidadeDAO` à tela de Visão Geral utilizando o hook `useEffect` para buscar os dados instanciados.
+## 🚀 Sprint 5 - Camada de Dados, Encapsulamento e DAOs
 
+Nesta sprint, organizamos a camada de dados do protótipo implementando classes de domínio orientadas a objetos e o padrão DAO, preparando a estrutura para futura integração com backend.
+
+**Entregas e Decisões de Arquitetura:**
+* **Modelagem de Domínio:** Criamos as classes `Unidade`, `Cliente`, `Evento` e `RegistroSaude` com atributos estritamente privados (`#`) e métodos de acesso (getters) padronizados.
+* **Encapsulamento Seguro:** Arrays aninhados (`eventos` e `healthSeries`) são convertidos para instâncias de classe no construtor de `Cliente`. Os métodos `getEventos()` e `getHistoricoSaude()` retornam cópias rasas (`[...this.#eventos]`) para impedir mutações externas indesejadas.
+* **Contrato de Consultas (DAOs):** Implementamos `UnidadeDAO` e `ClienteDAO` com métodos assíncronos (`async/Promise`). Como não há servidor nesta etapa, os DAOs consultam estaticamente o arquivo `dataset_painel_multitenant.json` e convertem o resultado em instâncias ricas de domínio.
+
+**Exemplo de Uso do DAO (Demonstração):**
+```javascript
+import ClienteDAO from './dao/ClienteDAO.mjs';
+
+async function testarConsultas() {
+  const clienteDAO = new ClienteDAO();
+  
+  // Busca todos os clientes de uma unidade específica
+  const clientes = await clienteDAO.listarPorUnidade("tenant-centro-oeste");
+  
+  if (clientes.length > 0) {
+    console.log("Cliente:", clientes[0].getNome());
+    console.log("Eventos encapsulados:", clientes[0].getEventos());
+  }
+}
 
 
 ## Equipe
