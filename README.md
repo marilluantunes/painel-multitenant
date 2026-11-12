@@ -103,6 +103,39 @@ Nesta segunda sprint, o foco principal foi a evolução do protótipo, substitui
 * **Tela de Visão Geral:** Implementação de cartões para as quatro unidades do dataset (Centro-Oeste, Sul, Norte e Litoral). Utilização dos componentes `Card`, `Statistic` e `Tag` do Ant Design para exibir nome, porte e exemplos estáticos de carteira e funil.
 * **Tela de Comparativo:** Construção de uma tabela de comparação utilizando o componente `Table` do Ant Design. Para suprir a restrição de não utilizar bibliotecas como *Recharts* nesta etapa, desenvolvemos um mock visual de gráfico de barras utilizando o componente `Progress` nativo do Ant Design, acompanhado de alertas (`Alert`) reforçando o caráter acadêmico e fictício dos dados.
 * **Tela de Histórico:** Criação de uma linha do tempo detalhada para o cliente "João Silva" utilizando o componente `Timeline` do Ant Design. Os eventos (compras, suporte, entrega) foram diferenciados visualmente por cores e ícones (`@ant-design/icons`), mantendo a apresentação dos dados diretamente no código, conforme exigido pelos limites da sprint.
+  
+# PRIMORA - Painel de Inteligência Multi-tenant
+
+## Projeto Integrador - Bolsa Futuro Digital
+
+### Sprint 3 - Integração de dados JSON locais
+
+Projeto desenvolvido utilizando ReactJS, Vite e Ant Design.
+
+### Tecnologias utilizadas
+- ReactJS
+- Vite
+- JavaScript
+- JSON
+- Ant Design
+
+### Funcionalidades desenvolvidas
+
+1. Visão Geral: apresentação de quatro unidades por meio de cartões dinâmicos.
+2. Comparativo entre Unidades: tabela com indicadores das unidades.
+3. Histórico de Clientes: identificação dos clientes e apresentação dos eventos em Timeline.
+
+### Integração de dados
+
+Arquivo JSON utilizado:
+
+src/data/dataset_painel_multitenant.json
+
+Os dados são importados localmente e apresentados por meio de map(), props e componentes React.
+
+### Sprint 3
+
+Integração de dados locais, renderização dinâmica e componentização.
 
 
 ## Equipe

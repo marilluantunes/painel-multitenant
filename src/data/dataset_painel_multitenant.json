@@ -1,0 +1,84 @@
+
+{
+    "unidades": [
+      {
+        "id": 1,
+        "nome": "Unidade Brasília",
+        "porte": "Grande",
+        "clientes": 1250,
+        "indicador": 92,
+        "status": "Ativo"
+      },
+      {
+        "id": 2,
+        "nome": "Unidade Goiânia",
+        "porte": "Médio",
+        "clientes": 850,
+        "indicador": 85,
+        "status": "Ativo"
+      },
+      {
+        "id": 3,
+        "nome": "Unidade Anápolis",
+        "porte": "Pequeno",
+        "clientes": 420,
+        "indicador": 78,
+        "status": "Ativo"
+      },
+      {
+        "id": 4,
+        "nome": "Unidade Luziânia",
+        "porte": "Médio",
+        "clientes": 690,
+        "indicador": 88,
+        "status": "Ativo"
+      }
+    ],
+    "clientes": [
+      {
+        "id": 1,
+        "nome": "Cliente Exemplo 1",
+        "documento": "CLI-001",
+        "unidade": "Unidade Brasília",
+        "eventos": [
+          {
+            "id": 1,
+            "data": "03/11/2026",
+            "descricao": "Cadastro realizado"
+          },
+          {
+            "id": 2,
+            "data": "04/11/2026",
+            "descricao": "Dados atualizados"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "nome": "Cliente Exemplo 2",
+        "documento": "CLI-002",
+        "unidade": "Unidade Goiânia",
+        "eventos": [
+          {
+            "id": 3,
+            "data": "03/11/2026",
+            "descricao": "Cadastro realizado"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "nome": "Cliente Exemplo 3",
+        "documento": "CLI-003",
+        "unidade": "Unidade Anápolis",
+        "eventos": [
+          {
+            "id": 4,
+            "data": "04/11/2026",
+            "descricao": "Cadastro atualizado"
+          }
+        ]
+      }
+    ]
+  }
+  
