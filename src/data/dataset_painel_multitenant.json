@@ -1,84 +1,616 @@
-
 {
-    "unidades": [
-      {
-        "id": 1,
-        "nome": "Unidade Brasília",
-        "porte": "Grande",
-        "clientes": 1250,
-        "indicador": 92,
-        "status": "Ativo"
+  "geradoEm": "2026-09-01",
+  "tenants": [
+    {
+      "id": "vetor-centro-oeste",
+      "nome": "Vetor Centro-Oeste",
+      "porte": "grande",
+      "carteiraTotalClientes": 412,
+      "receitaCarteira90d": 3850000,
+      "engagementEvents7d": 5140,
+      "activeUsers7d": 86,
+      "engagementTrend30d": [
+        420,
+        405,
+        460,
+        480,
+        470,
+        510,
+        495,
+        520,
+        505,
+        530,
+        540,
+        512,
+        498,
+        560,
+        555,
+        570,
+        540,
+        590,
+        610,
+        600,
+        615,
+        630,
+        620,
+        640,
+        655,
+        648,
+        660,
+        670,
+        665,
+        680
+      ],
+      "funnel90d": {
+        "gerada": 2380,
+        "vista": 1990,
+        "sucesso": 1120,
+        "falha": 640
       },
-      {
-        "id": 2,
-        "nome": "Unidade Goiânia",
-        "porte": "Médio",
-        "clientes": 850,
-        "indicador": 85,
-        "status": "Ativo"
+      "funnelTrend30d": [
+        0.41,
+        0.42,
+        0.4,
+        0.43,
+        0.44,
+        0.43,
+        0.45,
+        0.44,
+        0.46,
+        0.45,
+        0.47,
+        0.46,
+        0.48,
+        0.47,
+        0.49,
+        0.48,
+        0.47,
+        0.49,
+        0.5,
+        0.49,
+        0.51,
+        0.5,
+        0.52,
+        0.51,
+        0.53,
+        0.52,
+        0.54,
+        0.53,
+        0.55,
+        0.54
+      ],
+      "healthDistribution": {
+        "saudavel": 210,
+        "atencao": 120,
+        "risco": 62,
+        "critico": 20
       },
-      {
-        "id": 3,
-        "nome": "Unidade Anápolis",
-        "porte": "Pequeno",
-        "clientes": 420,
-        "indicador": 78,
-        "status": "Ativo"
+      "riscoAbsoluto": 82,
+      "riscoDrivers": [
+        "Queda de 12% no funil de sucesso nas últimas 2 semanas",
+        "20 contas em status crítico"
+      ]
+    },
+    {
+      "id": "vetor-sul",
+      "nome": "Vetor Sul",
+      "porte": "media",
+      "carteiraTotalClientes": 138,
+      "receitaCarteira90d": 980000,
+      "engagementEvents7d": 1120,
+      "activeUsers7d": 24,
+      "engagementTrend30d": [
+        95,
+        98,
+        101,
+        97,
+        99,
+        103,
+        100,
+        105,
+        102,
+        108,
+        106,
+        110,
+        104,
+        109,
+        112,
+        108,
+        111,
+        115,
+        113,
+        118,
+        116,
+        120,
+        119,
+        122,
+        121,
+        125,
+        123,
+        127,
+        126,
+        129
+      ],
+      "funnel90d": {
+        "gerada": 640,
+        "vista": 505,
+        "sucesso": 190,
+        "falha": 210
       },
-      {
-        "id": 4,
-        "nome": "Unidade Luziânia",
-        "porte": "Médio",
-        "clientes": 690,
-        "indicador": 88,
-        "status": "Ativo"
-      }
-    ],
-    "clientes": [
-      {
-        "id": 1,
-        "nome": "Cliente Exemplo 1",
-        "documento": "CLI-001",
-        "unidade": "Unidade Brasília",
-        "eventos": [
-          {
-            "id": 1,
-            "data": "03/11/2026",
-            "descricao": "Cadastro realizado"
-          },
-          {
-            "id": 2,
-            "data": "04/11/2026",
-            "descricao": "Dados atualizados"
-          }
-        ]
+      "funnelTrend30d": [
+        0.33,
+        0.32,
+        0.31,
+        0.33,
+        0.3,
+        0.32,
+        0.29,
+        0.31,
+        0.28,
+        0.3,
+        0.27,
+        0.29,
+        0.26,
+        0.28,
+        0.25,
+        0.27,
+        0.24,
+        0.26,
+        0.23,
+        0.25,
+        0.22,
+        0.24,
+        0.21,
+        0.23,
+        0.2,
+        0.22,
+        0.19,
+        0.21,
+        0.18,
+        0.2
+      ],
+      "healthDistribution": {
+        "saudavel": 48,
+        "atencao": 46,
+        "risco": 32,
+        "critico": 12
       },
-      {
-        "id": 2,
-        "nome": "Cliente Exemplo 2",
-        "documento": "CLI-002",
-        "unidade": "Unidade Goiânia",
-        "eventos": [
-          {
-            "id": 3,
-            "data": "03/11/2026",
-            "descricao": "Cadastro realizado"
-          }
-        ]
+      "riscoAbsoluto": 44,
+      "riscoDrivers": [
+        "Taxa de sucesso do funil caindo há 5 semanas seguidas",
+        "12 contas em status crítico"
+      ]
+    },
+    {
+      "id": "vetor-norte",
+      "nome": "Vetor Norte",
+      "porte": "pequena",
+      "carteiraTotalClientes": 51,
+      "receitaCarteira90d": 310000,
+      "engagementEvents7d": 260,
+      "activeUsers7d": 9,
+      "engagementTrend30d": [
+        22,
+        21,
+        23,
+        20,
+        24,
+        22,
+        25,
+        23,
+        26,
+        24,
+        27,
+        25,
+        28,
+        26,
+        29,
+        27,
+        30,
+        28,
+        31,
+        29,
+        32,
+        30,
+        33,
+        31,
+        34,
+        32,
+        35,
+        33,
+        36,
+        34
+      ],
+      "funnel90d": {
+        "gerada": 210,
+        "vista": 178,
+        "sucesso": 96,
+        "falha": 40
       },
-      {
-        "id": 3,
-        "nome": "Cliente Exemplo 3",
-        "documento": "CLI-003",
-        "unidade": "Unidade Anápolis",
-        "eventos": [
-          {
-            "id": 4,
-            "data": "04/11/2026",
-            "descricao": "Cadastro atualizado"
-          }
-        ]
-      }
-    ]
-  }
-  
+      "funnelTrend30d": [
+        0.45,
+        0.46,
+        0.47,
+        0.46,
+        0.48,
+        0.47,
+        0.49,
+        0.48,
+        0.5,
+        0.49,
+        0.51,
+        0.5,
+        0.52,
+        0.51,
+        0.53,
+        0.52,
+        0.54,
+        0.53,
+        0.55,
+        0.54,
+        0.56,
+        0.55,
+        0.57,
+        0.56,
+        0.58,
+        0.57,
+        0.59,
+        0.58,
+        0.6,
+        0.59
+      ],
+      "healthDistribution": {
+        "saudavel": 30,
+        "atencao": 14,
+        "risco": 5,
+        "critico": 2
+      },
+      "riscoAbsoluto": 7,
+      "riscoDrivers": [
+        "Carteira pequena e estável — poucas variações no período"
+      ]
+    },
+    {
+      "id": "vetor-litoral",
+      "nome": "Vetor Litoral",
+      "porte": "media-pequena",
+      "carteiraTotalClientes": 76,
+      "receitaCarteira90d": 512000,
+      "engagementEvents7d": 410,
+      "activeUsers7d": 13,
+      "engagementTrend30d": [
+        38,
+        36,
+        39,
+        35,
+        37,
+        34,
+        36,
+        33,
+        35,
+        32,
+        34,
+        31,
+        33,
+        30,
+        32,
+        29,
+        31,
+        28,
+        30,
+        27,
+        29,
+        26,
+        28,
+        25,
+        27,
+        24,
+        26,
+        23,
+        25,
+        22
+      ],
+      "funnel90d": {
+        "gerada": 305,
+        "vista": 240,
+        "sucesso": 88,
+        "falha": 122
+      },
+      "funnelTrend30d": [
+        0.3,
+        0.29,
+        0.28,
+        0.27,
+        0.26,
+        0.25,
+        0.24,
+        0.23,
+        0.22,
+        0.21,
+        0.2,
+        0.19,
+        0.18,
+        0.17,
+        0.16,
+        0.15,
+        0.16,
+        0.15,
+        0.14,
+        0.15,
+        0.14,
+        0.13,
+        0.14,
+        0.13,
+        0.12,
+        0.13,
+        0.12,
+        0.11,
+        0.12,
+        0.11
+      ],
+      "healthDistribution": {
+        "saudavel": 22,
+        "atencao": 24,
+        "risco": 20,
+        "critico": 10
+      },
+      "riscoAbsoluto": 30,
+      "riscoDrivers": [
+        "Taxa de sucesso do funil é a pior entre todas as unidades",
+        "Tendência de queda contínua há 30 dias"
+      ]
+    }
+  ],
+  "clientes": [
+    {
+      "id": "cli-timeline-001",
+      "nome": "Comercial Rio Bonito",
+      "tenantId": "vetor-sul",
+      "tenantNome": "Vetor Sul",
+      "healthSeries": [
+        {
+          "data": "2026-06-01",
+          "score": 78
+        },
+        {
+          "data": "2026-06-15",
+          "score": 74
+        },
+        {
+          "data": "2026-07-01",
+          "score": 69
+        },
+        {
+          "data": "2026-07-15",
+          "score": 58
+        },
+        {
+          "data": "2026-08-01",
+          "score": 61
+        },
+        {
+          "data": "2026-08-15",
+          "score": 52
+        },
+        {
+          "data": "2026-09-01",
+          "score": 47
+        }
+      ],
+      "eventos": [
+        {
+          "data": "2026-09-01T09:12:00",
+          "tipo": "health_score",
+          "titulo": "Score recalculado: 47 (risco)"
+        },
+        {
+          "data": "2026-08-28T14:03:00",
+          "tipo": "flag",
+          "titulo": "Sem pedidos há mais de 21 dias"
+        },
+        {
+          "data": "2026-08-25T11:20:00",
+          "tipo": "tarefa_status",
+          "titulo": "Tarefa 'Ligar para renovar pedido' marcada como falha"
+        },
+        {
+          "data": "2026-08-20T16:45:00",
+          "tipo": "tarefa_vista",
+          "titulo": "Tarefa 'Ligar para renovar pedido' visualizada pelo vendedor"
+        },
+        {
+          "data": "2026-08-18T08:30:00",
+          "tipo": "tarefa_criada",
+          "titulo": "Tarefa gerada: Ligar para renovar pedido"
+        },
+        {
+          "data": "2026-08-10T10:00:00",
+          "tipo": "compra",
+          "titulo": "Pedido realizado",
+          "valor": 4200
+        },
+        {
+          "data": "2026-07-22T15:10:00",
+          "tipo": "recomendacao",
+          "titulo": "Recomendação: oferecer desconto de recompra"
+        },
+        {
+          "data": "2026-07-15T09:00:00",
+          "tipo": "health_score",
+          "titulo": "Score recalculado: 58 (atenção)"
+        },
+        {
+          "data": "2026-07-02T13:40:00",
+          "tipo": "compra",
+          "titulo": "Pedido realizado",
+          "valor": 6800
+        },
+        {
+          "data": "2026-06-20T10:15:00",
+          "tipo": "bonificacao",
+          "titulo": "Bonificação aplicada",
+          "valor": 350
+        },
+        {
+          "data": "2026-06-05T09:00:00",
+          "tipo": "nota",
+          "titulo": "Cliente reclamou de atraso na última entrega"
+        },
+        {
+          "data": "2026-06-01T09:00:00",
+          "tipo": "health_score",
+          "titulo": "Score recalculado: 78 (saudável)"
+        }
+      ]
+    },
+    {
+      "id": "cli-timeline-002",
+      "nome": "Mercadinho Nossa Senhora",
+      "tenantId": "vetor-sul",
+      "tenantNome": "Vetor Sul",
+      "healthSeries": [
+        {
+          "data": "2026-07-01",
+          "score": 55
+        },
+        {
+          "data": "2026-07-15",
+          "score": 62
+        },
+        {
+          "data": "2026-08-01",
+          "score": 70
+        },
+        {
+          "data": "2026-08-15",
+          "score": 76
+        },
+        {
+          "data": "2026-09-01",
+          "score": 81
+        }
+      ],
+      "eventos": [
+        {
+          "data": "2026-09-01T09:12:00",
+          "tipo": "health_score",
+          "titulo": "Score recalculado: 81 (saudável)"
+        },
+        {
+          "data": "2026-08-27T11:00:00",
+          "tipo": "compra",
+          "titulo": "Pedido realizado",
+          "valor": 9100
+        },
+        {
+          "data": "2026-08-20T09:30:00",
+          "tipo": "cluster_mudanca",
+          "titulo": "Movido do cluster 'ocasional' para 'recorrente'"
+        },
+        {
+          "data": "2026-08-15T09:00:00",
+          "tipo": "health_score",
+          "titulo": "Score recalculado: 76 (atenção)"
+        },
+        {
+          "data": "2026-08-05T14:20:00",
+          "tipo": "compra",
+          "titulo": "Pedido realizado",
+          "valor": 5200
+        },
+        {
+          "data": "2026-07-28T10:00:00",
+          "tipo": "tarefa_status",
+          "titulo": "Tarefa 'Apresentar novo catálogo' marcada como sucesso"
+        },
+        {
+          "data": "2026-07-20T08:45:00",
+          "tipo": "tarefa_criada",
+          "titulo": "Tarefa gerada: Apresentar novo catálogo"
+        },
+        {
+          "data": "2026-07-15T09:00:00",
+          "tipo": "health_score",
+          "titulo": "Score recalculado: 62 (atenção)"
+        },
+        {
+          "data": "2026-07-03T13:00:00",
+          "tipo": "compra",
+          "titulo": "Pedido realizado",
+          "valor": 2100
+        },
+        {
+          "data": "2026-07-01T09:00:00",
+          "tipo": "health_score",
+          "titulo": "Score recalculado: 55 (atenção)"
+        }
+      ]
+    },
+    {
+      "id": "cli-timeline-003",
+      "nome": "Bazar Sol Nascente",
+      "tenantId": "vetor-centro-oeste",
+      "tenantNome": "Vetor Centro-Oeste",
+      "healthSeries": [
+        {
+          "data": "2026-07-15",
+          "score": 40
+        },
+        {
+          "data": "2026-08-01",
+          "score": 35
+        },
+        {
+          "data": "2026-08-15",
+          "score": 28
+        },
+        {
+          "data": "2026-09-01",
+          "score": 22
+        }
+      ],
+      "eventos": [
+        {
+          "data": "2026-09-01T09:12:00",
+          "tipo": "health_score",
+          "titulo": "Score recalculado: 22 (crítico)"
+        },
+        {
+          "data": "2026-08-29T10:00:00",
+          "tipo": "flag",
+          "titulo": "Sem pedidos há mais de 45 dias"
+        },
+        {
+          "data": "2026-08-22T16:00:00",
+          "tipo": "tarefa_status",
+          "titulo": "Tarefa 'Visita presencial urgente' marcada como falha"
+        },
+        {
+          "data": "2026-08-16T09:00:00",
+          "tipo": "tarefa_criada",
+          "titulo": "Tarefa gerada: Visita presencial urgente"
+        },
+        {
+          "data": "2026-08-15T09:00:00",
+          "tipo": "health_score",
+          "titulo": "Score recalculado: 28 (crítico)"
+        },
+        {
+          "data": "2026-08-01T09:00:00",
+          "tipo": "health_score",
+          "titulo": "Score recalculado: 35 (risco)"
+        },
+        {
+          "data": "2026-07-18T11:00:00",
+          "tipo": "nota",
+          "titulo": "Vendedor relatou dificuldade de contato"
+        },
+        {
+          "data": "2026-07-15T09:00:00",
+          "tipo": "health_score",
+          "titulo": "Score recalculado: 40 (risco)"
+        }
+      ]
+    }
+  ]
+}
