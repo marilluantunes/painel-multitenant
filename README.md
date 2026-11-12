@@ -25,6 +25,23 @@ Painel web de inteligência multi-tenant desenvolvido como parte da Sprint 1 do 
 - Node.js em uma versão compatível com o Vite 8.
 - npm, incluído na instalação do Node.js.
 
+## Configuração da API (Sprint 6)
+
+O frontend agora consome a API REST do workflow n8n em vez do arquivo JSON local durante a execução das telas.
+
+Crie um arquivo `.env.local` na raiz do projeto com:
+
+```env
+VITE_API_BASE_URL=https://n8n.incluc0de.com.br/webhook/primora/v1
+```
+
+Endpoints utilizados:
+
+- `GET /unidades` → retorna as unidades
+- `GET /clientes` → retorna os clientes e seus eventos/healthSeries
+
+Se a API não responder ou houver CORS, a interface exibirá mensagem de erro visualmente sem quebrar a aplicação.
+
 ## Executar localmente
 
 Clone o repositório e entre na pasta do projeto:
@@ -153,7 +170,34 @@ async function testarConsultas() {
     console.log("Eventos encapsulados:", clientes[0].getEventos());
   }
 }
+```
 
+## 🚀 Sprint 6 - Integração do Frontend com o Backend REST
+
+Nesta sprint, o foco foi substituir a leitura direta do arquivo JSON local pela comunicação real com a API REST publicada no n8n. O objetivo foi manter a estrutura visual e a arquitetura do frontend, mas trocar a origem dos dados para endpoints HTTP assíncronos com `fetch()` e `async/await`.
+
+**Entregas e Implementações Técnicas:**
+* **Configuração da API:** Criação do arquivo `.env.local` com a variável `VITE_API_BASE_URL`, apontando para o endpoint base do workflow Primora.
+* **Cliente HTTP:** Implementação do módulo de configuração e utilitário `obterArray()`, validando `response.ok`, tratando respostas inválidas e encapsulando a base da URL da API.
+* **Atualização dos DAOs:** `UnidadeDAO.listar()`, `UnidadeDAO.buscarPorId(id)`, `ClienteDAO.listar()`, `ClienteDAO.buscarPorId(id)` e `ClienteDAO.listarPorUnidade(tenantId)` passaram a consultar a API REST em vez do JSON local.
+* **Preservação do Modelo de Domínio:** As classes `Unidade`, `Cliente`, `Evento` e `RegistroSaude` continuam encapsulando os dados com getters, mantendo a estrutura da Sprint 5 intacta.
+* **Integração nas telas:** As telas de Visão Geral, Comparativo e Histórico agora carregam os registros de forma assíncrona, com feedback visual de carregamento e tratamento de erro.
+* **Estados vazios e robustez:** Adição de mensagens para cenários em que a API não retorna registros ou em que o filtro selecionado não encontra dados.
+
+**Exemplo de Fluxo da Sprint 6:**
+```javascript
+const response = await fetch(`${API_BASE_URL}/unidades`);
+if (!response.ok) {
+  throw new Error(`Falha ao consultar unidades: HTTP ${response.status}`);
+}
+const unidades = await response.json();
+return unidades;
+```
+
+**Benefícios da Implementação:**
+- O frontend deixa de depender do JSON local em tempo de execução.
+- A aplicação passa a consumir dados reais do workflow n8n.
+- A arquitetura continua organizada e pronta para evolução futura com autenticação, filtros e integrações reais.
 
 ## Equipe
 
