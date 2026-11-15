@@ -1,82 +1,137 @@
-import { useState } from "react";
-import { Card, Tag, Timeline, Typography, Alert, Select, Row, Col } from "antd";
-import dataset from "../../data/dataset_painel_multitenant.json";
+import { useEffect, useState } from "react";
+import { Card, Tag, Timeline, Typography, Alert, Select, Row, Col, Spin } from "antd";
+import ClienteDAO from "../../objetos/dao/ClienteDAO.mjs";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 
-export default function Historico() {
-  // Estado inicia em "all" para mostrar a lista completa
-  const [selectedClienteId, setSelectedClienteId] = useState("all");
+const getField = (obj, getterName, fieldName, fallback = "") => {
+  if (typeof obj?.[getterName] === "function") {
+    return obj[getterName]();
+  }
+  return obj?.[fieldName] ?? fallback;
+};
 
-  // Filtra os clientes (todos ou apenas um específico)
+const getEventoField = (evento, getterName, fieldName, fallback = "") => {
+  if (typeof evento?.[getterName] === "function") {
+    return evento[getterName]();
+  }
+  return evento?.[fieldName] ?? fallback;
+};
+
+export default function Historico() {
+  const [selectedClienteId, setSelectedClienteId] = useState("all");
+  const [clientes, setClientes] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState(null);
+
+  useEffect(() => {
+    let ativo = true;
+    const dao = new ClienteDAO();
+
+    async function carregar() {
+      try {
+        const dados = await dao.listar();
+        if (ativo) setClientes(dados);
+      } catch (error) {
+        if (ativo) setErro(error.message);
+      } finally {
+        if (ativo) setCarregando(false);
+      }
+    }
+
+    carregar();
+    return () => { ativo = false; };
+  }, []);
+
   const clientesParaExibir = selectedClienteId === "all"
-    ? dataset.clientes
-    : dataset.clientes.filter(c => c.id === selectedClienteId);
+    ? clientes
+    : clientes.filter((cliente) => getField(cliente, "getId", "id") === selectedClienteId);
+
+  if (carregando) {
+    return <Spin tip="Carregando histórico..." style={{ display: "block", marginTop: 32 }} />;
+  }
+
+  if (erro) {
+    return (
+      <Alert
+        type="error"
+        showIcon
+        message="Erro ao consultar clientes"
+        description={erro}
+      />
+    );
+  }
 
   return (
     <div>
       <Title level={3}>Histórico de Clientes</Title>
-      <Alert 
-        message="Selecione um cliente para visualizar os eventos ou veja todos de uma vez." 
-        type="info" 
-        showIcon 
-        style={{ marginBottom: 24 }} 
+      <Alert
+        message="Selecione um cliente para visualizar os eventos ou veja todos de uma vez."
+        type="info"
+        showIcon
+        style={{ marginBottom: 24 }}
       />
 
-      {/* Select com a opção "Todos" */}
       <Select
         style={{ width: 300, marginBottom: 24 }}
         value={selectedClienteId}
         onChange={(value) => setSelectedClienteId(value)}
       >
         <Option value="all">Todos os Clientes</Option>
-        {dataset.clientes.map((cliente) => (
-          <Option key={cliente.id} value={cliente.id}>
-            {cliente.nome}
+        {clientes.map((cliente) => (
+          <Option key={getField(cliente, "getId", "id")} value={getField(cliente, "getId", "id")}>
+            {getField(cliente, "getNome", "nome")}
           </Option>
         ))}
       </Select>
 
-      {/* 
-        Se "all", os itens alinham à esquerda (start) em 2 colunas (md=12).
-        Se for um específico, o item centraliza (center) e fica maior (md=16).
-      */}
-      <Row 
-        justify={selectedClienteId === "all" ? "start" : "center"} 
-        gutter={[16, 16]}
-      >
-        {clientesParaExibir.map((cliente) => (
-          <Col 
-            xs={24} 
-            md={selectedClienteId === "all" ? 12 : 16} 
-            lg={selectedClienteId === "all" ? 12 : 12} 
-            key={cliente.id}
-          >
-            <Card 
-              title={<Title level={4} style={{ margin: 0 }}>{cliente.nome}</Title>} 
-              extra={<Tag color="blue">{cliente.tenantNome}</Tag>}
-              style={{ height: "100%", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}
-            >
-              <Timeline
-                items={cliente.eventos.map((evento, index) => ({
-                  key: index,
-                  color: evento.tipo === "compra" ? "green" : evento.tipo === "health_score" ? "blue" : "gray",
-                  children: (
-                    <div>
-                      <Text strong>{evento.titulo}</Text>
-                      <br />
-                      <Text type="secondary" style={{ fontSize: 12 }}>
-                        {new Date(evento.data).toLocaleString('pt-BR')}
-                      </Text>
-                    </div>
-                  ),
-                }))}
-              />
-            </Card>
-          </Col>
-        ))}
-      </Row>
+      {clientesParaExibir.length === 0 ? (
+        <Alert
+          type="info"
+          showIcon
+          message="Nenhum cliente encontrado"
+          description="Não há registros para o filtro selecionado no momento."
+        />
+      ) : (
+        <Row justify={selectedClienteId === "all" ? "start" : "center"} gutter={[16, 16]}>
+          {clientesParaExibir.map((cliente) => {
+            const eventos = typeof cliente?.getEventos === "function" ? cliente.getEventos() : (cliente?.eventos ?? []);
+            const clienteId = getField(cliente, "getId", "id");
+
+            return (
+              <Col
+                xs={24}
+                md={selectedClienteId === "all" ? 12 : 16}
+                lg={selectedClienteId === "all" ? 12 : 12}
+                key={clienteId}
+              >
+                <Card
+                  title={<Title level={4} style={{ margin: 0 }}>{getField(cliente, "getNome", "nome")}</Title>}
+                  extra={<Tag color="blue">{getField(cliente, "getTenantNome", "tenantNome")}</Tag>}
+                  style={{ height: "100%", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}
+                >
+                  <Timeline
+                    items={eventos.map((evento, index) => ({
+                      key: `${clienteId}-${index}`,
+                      color: getEventoField(evento, "getTipo", "tipo") === "compra" ? "green" : getEventoField(evento, "getTipo", "tipo") === "health_score" ? "blue" : "gray",
+                      children: (
+                        <div>
+                          <Text strong>{getEventoField(evento, "getTitulo", "titulo")}</Text>
+                          <br />
+                          <Text type="secondary" style={{ fontSize: 12 }}>
+                            {new Date(getEventoField(evento, "getData", "data")).toLocaleString("pt-BR")}
+                          </Text>
+                        </div>
+                      ),
+                    }))}
+                  />
+                </Card>
+              </Col>
+            );
+          })}
+        </Row>
+      )}
     </div>
   );
 }

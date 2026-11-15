@@ -1,20 +1,65 @@
-import { useState } from "react";
-import { Typography, Row, Col, Select } from "antd";
+import { useEffect, useState } from "react";
+import { Typography, Row, Col, Select, Spin, Alert } from "antd";
 import CardUnidade from "./CardUnidade.jsx";
-import dataset from "../../data/dataset_painel_multitenant.json";
+import UnidadeDAO from "../../objetos/dao/UnidadeDAO.mjs";
 
 const { Title, Paragraph } = Typography;
 const { Option } = Select;
 
-export default function VisaoGeral() {
-  // O estado inicial agora é "all" para mostrar todas as unidades de cara
-  const [selectedUnidadeId, setSelectedUnidadeId] = useState("all");
+const getId = (unidade) => (typeof unidade?.getId === "function" ? unidade.getId() : unidade?.id);
+const getNome = (unidade) => (typeof unidade?.getNome === "function" ? unidade.getNome() : unidade?.nome);
 
-  // Lógica para filtrar as unidades:
-  // Se "all", pega todas. Se não, pega apenas a unidade com o ID correspondente
+export default function VisaoGeral() {
+  const [selectedUnidadeId, setSelectedUnidadeId] = useState("all");
+  const [unidades, setUnidades] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState(null);
+
+  useEffect(() => {
+    let ativo = true;
+    const dao = new UnidadeDAO();
+
+    async function carregarUnidades() {
+      try {
+        const dados = await dao.listar();
+        if (ativo) {
+          setUnidades(dados);
+        }
+      } catch (error) {
+        if (ativo) {
+          setErro(error.message);
+        }
+      } finally {
+        if (ativo) {
+          setCarregando(false);
+        }
+      }
+    }
+
+    carregarUnidades();
+    return () => {
+      ativo = false;
+    };
+  }, []);
+
   const unidadesParaExibir = selectedUnidadeId === "all"
-    ? dataset.tenants
-    : dataset.tenants.filter(u => u.id === selectedUnidadeId);
+    ? unidades
+    : unidades.filter((unidade) => getId(unidade) === selectedUnidadeId);
+
+  if (carregando) {
+    return <Spin tip="Carregando unidades..." style={{ display: "block", marginTop: 32 }} />;
+  }
+
+  if (erro) {
+    return (
+      <Alert
+        type="error"
+        showIcon
+        message="Erro ao carregar unidades"
+        description={erro}
+      />
+    );
+  }
 
   return (
     <div>
@@ -23,34 +68,40 @@ export default function VisaoGeral() {
         Selecione uma unidade para visualizar os indicadores ou veja todas de uma vez.
       </Paragraph>
 
-      {/* Select com a opção extra de "Todas" */}
       <Select
         style={{ width: 300, marginBottom: 24 }}
         value={selectedUnidadeId}
         onChange={(value) => setSelectedUnidadeId(value)}
       >
         <Option value="all">Todas as Unidades</Option>
-        {dataset.tenants.map((unidade) => (
-          <Option key={unidade.id} value={unidade.id}>
-            {unidade.nome}
+        {unidades.map((unidade) => (
+          <Option key={getId(unidade)} value={getId(unidade)}>
+            {getNome(unidade)}
           </Option>
         ))}
       </Select>
 
-      {/* Grid Responsivo Inteligente */}
-      <Row justify="center" gutter={[16, 16]}>
-        {unidadesParaExibir.map((unidade) => (
-          <Col 
-            // O tamanho da coluna muda: se for "all", são 4 colunas (lg=6). Se for 1 só, fica maior (lg=12).
-            xs={24} 
-            md={selectedUnidadeId === "all" ? 12 : 16} 
-            lg={selectedUnidadeId === "all" ? 6 : 12} 
-            key={unidade.id}
-          >
-            <CardUnidade unidade={unidade} />
-          </Col>
-        ))}
-      </Row>
+      {unidadesParaExibir.length === 0 ? (
+        <Alert
+          type="info"
+          showIcon
+          message="Nenhuma unidade encontrada"
+          description="A API não retornou registros para o filtro atual."
+        />
+      ) : (
+        <Row justify="center" gutter={[16, 16]}>
+          {unidadesParaExibir.map((unidade) => (
+            <Col
+              xs={24}
+              md={selectedUnidadeId === "all" ? 12 : 16}
+              lg={selectedUnidadeId === "all" ? 6 : 12}
+              key={getId(unidade)}
+            >
+              <CardUnidade unidade={unidade} />
+            </Col>
+          ))}
+        </Row>
+      )}
     </div>
   );
 }

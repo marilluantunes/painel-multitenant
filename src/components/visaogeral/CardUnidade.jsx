@@ -4,15 +4,31 @@ import { ShopOutlined, RiseOutlined, InfoCircleOutlined, WarningOutlined } from 
 const { Text } = Typography;
 
 export default function CardUnidade({ unidade }) {
-  // Formatação de Moeda e Números
-  const formatMoeda = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(val);
-  const formatNum = (val) => new Intl.NumberFormat('pt-BR').format(val);
+  const getField = (getterName, fieldName, fallback = 0) => {
+    if (typeof unidade?.[getterName] === "function") {
+      return unidade[getterName]();
+    }
+    return unidade?.[fieldName] ?? fallback;
+  };
 
-  // Cálculo da conversão do funil
-  const conversao = Math.round(((unidade.funnel90d?.sucesso || 0) / (unidade.funnel90d?.gerada || 1)) * 100);
+  const formatMoeda = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(val || 0);
+  const formatNum = (val) => new Intl.NumberFormat('pt-BR').format(val || 0);
 
-  // Variável para alertar se o risco for alto (mais de 30 contas)
-  const isRiscoAlto = unidade.riscoAbsoluto > 30;
+  const funnel = getField("getFunnel90d", "funnel90d", {});
+  const health = getField("getHealthDistribution", "healthDistribution", {});
+  const drivers = getField("getRiscoDrivers", "riscoDrivers", []);
+
+  const conversao = Math.round(((funnel?.sucesso || 0) / (funnel?.gerada || 1)) * 100);
+  const isRiscoAlto = Number(getField("getRiscoAbsoluto", "riscoAbsoluto", 0)) > 30;
+
+  const unidadeNome = getField("getNome", "nome", "Unidade");
+  const unidadeId = getField("getId", "id", "");
+  const unidadePorte = getField("getPorte", "porte", "");
+  const receita = Number(getField("getReceitaCarteira90d", "receitaCarteira90d", 0));
+  const carteira = Number(getField("getCarteiraTotalClientes", "carteiraTotalClientes", 0));
+  const ativos = Number(getField("getActiveUsers7d", "activeUsers7d", 0));
+  const eventos7d = Number(getField("getEngagementEvents7d", "engagementEvents7d", 0));
+  const risco = Number(getField("getRiscoAbsoluto", "riscoAbsoluto", 0));
 
   return (
     <Card 
@@ -33,13 +49,13 @@ export default function CardUnidade({ unidade }) {
           </div>
           <div>
             <Text strong style={{ fontSize: 18, color: "#0f172a", display: "block", lineHeight: 1.2 }}>
-              {unidade.nome}
+              {unidadeNome}
             </Text>
-            <Text style={{ fontSize: 12, color: "#94a3b8" }}>ID: {unidade.id}</Text>
+            <Text style={{ fontSize: 12, color: "#94a3b8" }}>ID: {unidadeId}</Text>
           </div>
         </Space>
         <Tag color="blue" style={{ borderRadius: "4px", fontWeight: 600 }}>
-          Porte: {unidade.porte}
+          Porte: {unidadePorte}
         </Tag>
       </div>
 
@@ -49,12 +65,12 @@ export default function CardUnidade({ unidade }) {
       <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col span={12}>
           <Text style={{ fontSize: 11, color: "#64748b", fontWeight: 600, display: "block" }}>RECEITA (90d)</Text>
-          <Text strong style={{ fontSize: 16, color: "#0f172a" }}>{formatMoeda(unidade.receitaCarteira90d)}</Text>
+          <Text strong style={{ fontSize: 16, color: "#0f172a" }}>{formatMoeda(receita)}</Text>
         </Col>
         <Col span={12}>
           <Text style={{ fontSize: 11, color: "#64748b", fontWeight: 600, display: "block" }}>CARTEIRA</Text>
           <Text strong style={{ fontSize: 16, color: "#0f172a" }}>
-            {formatNum(unidade.carteiraTotalClientes)} <span style={{ fontSize: 12, fontWeight: 400, color: "#64748b" }}>clientes</span>
+            {formatNum(carteira)} <span style={{ fontSize: 12, fontWeight: 400, color: "#64748b" }}>clientes</span>
           </Text>
         </Col>
       </Row>
@@ -66,12 +82,12 @@ export default function CardUnidade({ unidade }) {
           <Col>
             <Text style={{ fontSize: 12, color: "#475569" }}>Usuários Ativos:</Text>
             <br />
-            <Text strong style={{ fontSize: 14, color: "#0f172a" }}>{formatNum(unidade.activeUsers7d)}</Text>
+            <Text strong style={{ fontSize: 14, color: "#0f172a" }}>{formatNum(ativos)}</Text>
           </Col>
           <Col style={{ textAlign: "right" }}>
             <Text style={{ fontSize: 12, color: "#475569" }}>Eventos:</Text>
             <br />
-            <Text strong style={{ fontSize: 14, color: "#0f172a" }}>{formatNum(unidade.engagementEvents7d)}</Text>
+            <Text strong style={{ fontSize: 14, color: "#0f172a" }}>{formatNum(eventos7d)}</Text>
           </Col>
         </Row>
       </div>
@@ -85,10 +101,10 @@ export default function CardUnidade({ unidade }) {
         <Progress percent={conversao} showInfo={false} strokeColor="#1677ff" size={["100%", 6]} />
         
         <Row justify="space-between" style={{ marginTop: 8 }}>
-          <Col><Text style={{ fontSize: 11, color: "#94a3b8" }}>Geradas: <strong style={{color: "#334155"}}>{unidade.funnel90d?.gerada}</strong></Text></Col>
-          <Col><Text style={{ fontSize: 11, color: "#94a3b8" }}>Vistas: <strong style={{color: "#334155"}}>{unidade.funnel90d?.vista}</strong></Text></Col>
-          <Col><Text style={{ fontSize: 11, color: "#94a3b8" }}>Sucesso: <strong style={{color: "#10b981"}}>{unidade.funnel90d?.sucesso}</strong></Text></Col>
-          <Col><Text style={{ fontSize: 11, color: "#94a3b8" }}>Falha: <strong style={{color: "#ef4444"}}>{unidade.funnel90d?.falha}</strong></Text></Col>
+          <Col><Text style={{ fontSize: 11, color: "#94a3b8" }}>Geradas: <strong style={{color: "#334155"}}>{funnel?.gerada ?? 0}</strong></Text></Col>
+          <Col><Text style={{ fontSize: 11, color: "#94a3b8" }}>Vistas: <strong style={{color: "#334155"}}>{funnel?.vista ?? 0}</strong></Text></Col>
+          <Col><Text style={{ fontSize: 11, color: "#94a3b8" }}>Sucesso: <strong style={{color: "#10b981"}}>{funnel?.sucesso ?? 0}</strong></Text></Col>
+          <Col><Text style={{ fontSize: 11, color: "#94a3b8" }}>Falha: <strong style={{color: "#ef4444"}}>{funnel?.falha ?? 0}</strong></Text></Col>
         </Row>
       </div>
 
@@ -98,10 +114,10 @@ export default function CardUnidade({ unidade }) {
       <div style={{ marginBottom: 16 }}>
         <Text style={{ fontSize: 11, color: "#64748b", fontWeight: 600, display: "block", marginBottom: 8 }}>SAÚDE DA CARTEIRA</Text>
         <Space size="small" wrap>
-          <Tag color="success">Saudável: {unidade.healthDistribution?.saudavel}</Tag>
-          <Tag color="warning">Atenção: {unidade.healthDistribution?.atencao}</Tag>
-          <Tag color="error">Risco: {unidade.healthDistribution?.risco}</Tag>
-          <Tag color="magenta">Crítico: {unidade.healthDistribution?.critico}</Tag>
+          <Tag color="success">Saudável: {health?.saudavel ?? 0}</Tag>
+          <Tag color="warning">Atenção: {health?.atencao ?? 0}</Tag>
+          <Tag color="error">Risco: {health?.risco ?? 0}</Tag>
+          <Tag color="magenta">Crítico: {health?.critico ?? 0}</Tag>
         </Space>
       </div>
 
@@ -115,13 +131,13 @@ export default function CardUnidade({ unidade }) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
           <Text style={{ fontSize: 12, color: "#64748b", fontWeight: 600 }}>Risco Absoluto</Text>
           <Text strong style={{ fontSize: 16, color: isRiscoAlto ? "#ef4444" : "#0f172a" }}>
-            {unidade.riscoAbsoluto} contas
+            {risco} contas
           </Text>
         </div>
         
         {/* Tooltip mostrando o motivo do risco */}
-        {unidade.riscoDrivers && unidade.riscoDrivers.length > 0 && (
-          <Tooltip title={unidade.riscoDrivers.join(" | ")}>
+        {Array.isArray(drivers) && drivers.length > 0 && (
+          <Tooltip title={drivers.join(" | ")}>
             <Text style={{ fontSize: 11, color: "#94a3b8", display: "flex", alignItems: "center", gap: 4 }}>
               <InfoCircleOutlined /> Motivo do risco (passe o mouse)
             </Text>
