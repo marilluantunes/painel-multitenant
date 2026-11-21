@@ -1,10 +1,20 @@
 import { useEffect, useState } from "react";
 import { Card, Tag, Timeline, Typography, Alert, Select, Row, Col, Spin } from "antd";
+import { 
+  ShoppingCartOutlined, 
+  LineChartOutlined, 
+  CheckCircleOutlined, 
+  ClockCircleOutlined, 
+  SyncOutlined, 
+  InfoCircleOutlined 
+} from "@ant-design/icons";
 import ClienteDAO from "../../objetos/dao/ClienteDAO.mjs";
 
-const { Title, Text } = Typography;
+
+const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
 
+// --- FUNÇÕES DE LEITURA DE DADOS ---
 const getField = (obj, getterName, fieldName, fallback = "") => {
   if (typeof obj?.[getterName] === "function") {
     return obj[getterName]();
@@ -17,6 +27,29 @@ const getEventoField = (evento, getterName, fieldName, fallback = "") => {
     return evento[getterName]();
   }
   return evento?.[fieldName] ?? fallback;
+};
+
+// mapeamento de estilos por tipo de evento
+const getEventStyle = (tipo) => {
+  const t = String(tipo).toLowerCase();
+  
+  if (t.includes('compra') || t.includes('pedido')) {
+    return { color: '#10b981', icon: <ShoppingCartOutlined /> };
+  }
+  if (t.includes('score')) {
+    return { color: '#38BDF8', icon: <LineChartOutlined /> };
+  }
+  if (t.includes('sucesso')) {
+    return { color: '#10b981', icon: <CheckCircleOutlined /> };
+  }
+  if (t.includes('tarefa')) {
+    return { color: '#fa8c16', icon: <ClockCircleOutlined /> };
+  }
+  if (t.includes('cluster')) {
+    return { color: '#D946EF', icon: <SyncOutlined /> };
+  }
+  
+  return { color: '#94A3B8', icon: <InfoCircleOutlined /> };
 };
 
 export default function Historico() {
@@ -49,7 +82,7 @@ export default function Historico() {
     : clientes.filter((cliente) => getField(cliente, "getId", "id") === selectedClienteId);
 
   if (carregando) {
-    return <Spin tip="Carregando histórico..." style={{ display: "block", marginTop: 32 }} />;
+    return <Spin tip="Carregando histórico..." style={{ display: "block", marginTop: 50 }} />;
   }
 
   if (erro) {
@@ -59,32 +92,45 @@ export default function Historico() {
         showIcon
         message="Erro ao consultar clientes"
         description={erro}
+        style={{ background: "rgba(239, 68, 68, 0.1)", border: "1px solid rgba(239, 68, 68, 0.3)", color: "#fca5a5" }}
       />
     );
   }
 
   return (
     <div>
-      <Title level={3}>Histórico de Clientes</Title>
-      <Alert
-        message="Selecione um cliente para visualizar os eventos ou veja todos de uma vez."
-        type="info"
-        showIcon
-        style={{ marginBottom: 24 }}
-      />
+      {/* BANNER HERO */}
+      <div className="glass-panel hero-banner">
+        <div className="hero-glow"></div>
+        <Title level={2} className="text-claro" style={{ margin: 0, fontWeight: 800 }}>
+          Timeline de <span style={{ color: "#38BDF8" }}>Cliente</span>
+        </Title>
+        <Paragraph className="text-muted" style={{ fontSize: "16px", marginTop: "8px", maxWidth: "600px", margin: 0 }}>
+          Acompanhe a jornada completa de compras, tarefas e mudanças de status de cada cliente da Distribuidora Vetor.
+        </Paragraph>
+      </div>
 
-      <Select
-        style={{ width: 300, marginBottom: 24 }}
-        value={selectedClienteId}
-        onChange={(value) => setSelectedClienteId(value)}
-      >
-        <Option value="all">Todos os Clientes</Option>
-        {clientes.map((cliente) => (
-          <Option key={getField(cliente, "getId", "id")} value={getField(cliente, "getId", "id")}>
-            {getField(cliente, "getNome", "nome")}
-          </Option>
-        ))}
-      </Select>
+      {/* Área de Filtros */}
+      <div className="flex-between" style={{ marginBottom: 24 }}>
+        <Title level={4} className="title-gradient" style={{ fontSize: 22 }}>
+          Histórico de Eventos
+        </Title>
+
+        <Select
+          size="large"
+          style={{ width: 300 }}
+          value={selectedClienteId}
+          onChange={(value) => setSelectedClienteId(value)}
+          className="custom-select-dark"
+        >
+          <Option value="all">Todos os Clientes</Option>
+          {clientes.map((cliente) => (
+            <Option key={getField(cliente, "getId", "id")} value={getField(cliente, "getId", "id")}>
+              {getField(cliente, "getNome", "nome")}
+            </Option>
+          ))}
+        </Select>
+      </div>
 
       {clientesParaExibir.length === 0 ? (
         <Alert
@@ -92,10 +138,12 @@ export default function Historico() {
           showIcon
           message="Nenhum cliente encontrado"
           description="Não há registros para o filtro selecionado no momento."
+          style={{ background: "rgba(56, 189, 248, 0.1)", border: "1px solid rgba(56, 189, 248, 0.3)", color: "#bae6fd" }}
         />
       ) : (
-        <Row justify={selectedClienteId === "all" ? "start" : "center"} gutter={[16, 16]}>
+        <Row justify={selectedClienteId === "all" ? "start" : "center"} gutter={[24, 24]}>
           {clientesParaExibir.map((cliente) => {
+            //  lógica de extração de eventos
             const eventos = typeof cliente?.getEventos === "function" ? cliente.getEventos() : (cliente?.eventos ?? []);
             const clienteId = getField(cliente, "getId", "id");
 
@@ -107,24 +155,49 @@ export default function Historico() {
                 key={clienteId}
               >
                 <Card
-                  title={<Title level={4} style={{ margin: 0 }}>{getField(cliente, "getNome", "nome")}</Title>}
-                  extra={<Tag color="blue">{getField(cliente, "getTenantNome", "tenantNome")}</Tag>}
-                  style={{ height: "100%", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}
+                  title={<Text strong className="text-claro" style={{ fontSize: 18 }}>{getField(cliente, "getNome", "nome")}</Text>}
+                  extra={
+                    <Tag className="tenant-tag">
+                      {getField(cliente, "getTenantNome", "tenantNome")}
+                    </Tag>
+                  }
+                  className="client-card"
                 >
                   <Timeline
-                    items={eventos.map((evento, index) => ({
-                      key: `${clienteId}-${index}`,
-                      color: getEventoField(evento, "getTipo", "tipo") === "compra" ? "green" : getEventoField(evento, "getTipo", "tipo") === "health_score" ? "blue" : "gray",
-                      children: (
-                        <div>
-                          <Text strong>{getEventoField(evento, "getTitulo", "titulo")}</Text>
-                          <br />
-                          <Text type="secondary" style={{ fontSize: 12 }}>
-                            {new Date(getEventoField(evento, "getData", "data")).toLocaleString("pt-BR")}
-                          </Text>
-                        </div>
-                      ),
-                    }))}
+                    items={eventos.map((evento, index) => {
+                      const tipo = getEventoField(evento, "getTipo", "tipo");
+                      const { color, icon } = getEventStyle(tipo);
+                      
+                      return {
+                        key: `${clienteId}-${index}`,
+                        // Visual: A classe base fica no CSS, as cores dinâmicas ficam no JS
+                        dot: (
+                          <div 
+                            className="timeline-dot"
+                            style={{ 
+                              background: `${color}20`, 
+                              border: `2px solid ${color}`, 
+                              color: color,
+                              boxShadow: `0 0 10px ${color}40`
+                            }}
+                          >
+                            {icon}
+                          </div>
+                        ),
+                        children: (
+                          <div style={{ marginTop: 2, marginBottom: 16 }}>
+                            <Text className="text-claro" style={{ fontSize: 14, fontWeight: 500, display: "block" }}>
+                              {getEventoField(evento, "getTitulo", "titulo")}
+                            </Text>
+                            <Text className="text-muted" style={{ fontSize: 12, display: "flex", alignItems: "center", marginTop: 4 }}>
+                              {new Date(getEventoField(evento, "getData", "data")).toLocaleString("pt-BR", {
+                                day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                              })}
+                            </Text>
+                          </div>
+                        ),
+                      };
+                    })}
                   />
                 </Card>
               </Col>
