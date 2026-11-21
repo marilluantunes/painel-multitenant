@@ -51,43 +51,24 @@ export default function CardUnidade({ unidade }) {
   // Cores utilitárias do tema escuro
   const textClaro = "#F8FAFC";
   const textMuted = "#94A3B8";
-  const bgGlass = "rgba(15, 23, 42, 0.6)";
-  const borderGlass = "rgba(255, 255, 255, 0.08)";
 
   return (
     <Card 
-      style={{ 
-        height: "100%", 
-        borderRadius: "20px", 
-        background: bgGlass, 
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-        border: `1px solid ${borderGlass}`,
-        borderTop: `4px solid ${corPorte}`, 
-        boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)", 
-        transition: "all 0.3s ease" 
-      }} 
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-4px)";
-        e.currentTarget.style.boxShadow = `0 20px 40px -10px rgba(0,0,0,0.6), 0 0 20px ${corPorte}30`;
-        e.currentTarget.style.borderColor = `rgba(255,255,255,0.15)`;
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "translateY(0)";
-        e.currentTarget.style.boxShadow = "0 10px 30px -10px rgba(0,0,0,0.5)";
-        e.currentTarget.style.borderColor = borderGlass;
-      }}
-      styles={{ body: { padding: "24px" } }} // <--- CORRIGIDO: bodyStyle virou styles={{ body: ... }}
+      className="unidade-card"
+      style={{ "--porte-color": corPorte }} // Passa a cor para o CSS
+      styles={{ body: { padding: "24px" } }}
     >
       
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
-        <Space align="center">
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, gap: "8px" }}>
+        <Space align="start" style={{ flex: 1, minWidth: 0 }}>
           <div style={{ background: "rgba(255,255,255,0.05)", padding: "10px", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.1)" }}>
             <ShopOutlined style={{ fontSize: 20, color: "#38BDF8" }} />
           </div>
-          <div>
-            <Text strong style={{ fontSize: 18, color: textClaro, display: "block", lineHeight: 1.2 }}>{unidadeNome}</Text>
-            <Text style={{ fontSize: 12, color: textMuted }}>ID: {unidadeId}</Text>
+          <div style={{ overflow: "hidden" }}>
+            <Text strong style={{ fontSize: 17, color: textClaro, display: "block", lineHeight: 1.2, whiteSpace: "normal", wordBreak: "break-word" }}>
+              {unidadeNome}
+            </Text>
+            <Text style={{ fontSize: 11, color: textMuted, display: "block", marginTop: 2 }}>ID: {unidadeId}</Text>
           </div>
         </Space>
         
@@ -98,9 +79,11 @@ export default function CardUnidade({ unidade }) {
           color: corPorte, 
           fontWeight: 700,
           textTransform: "capitalize",
-          padding: "2px 12px"
+          padding: "2px 10px",
+          margin: 0,
+          flexShrink: 0
         }}>
-          Porte: {unidadePorte}
+          {unidadePorte}
         </Tag>
       </div>
 

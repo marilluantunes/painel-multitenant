@@ -32,7 +32,6 @@ export default function VisaoGeral() {
     return () => { ativo = false; };
   }, []);
 
-  // Correção: 'tip' foi substituído por 'description' para remover o aviso do console
   if (carregando) return <Spin description="Carregando unidades..." style={{ display: "block", marginTop: 50 }} />;
   if (erro) return <Alert type="error" showIcon message="Erro ao carregar unidades" description={erro} />;
 
@@ -42,7 +41,6 @@ export default function VisaoGeral() {
 
   return (
     <div>
-      {/* BANNER HERO */}
       <div className="glass-panel hero-banner">
         <div className="hero-glow"></div>
         <Row align="middle" justify="space-between">
@@ -57,17 +55,12 @@ export default function VisaoGeral() {
         </Row>
       </div>
 
-      {/* ÁREA DE FILTROS */}
       <Row justify="space-between" align="middle" style={{ marginBottom: 24 }} gutter={[16, 16]}>
         <Col xs={24} md={12}>
           <Title 
             level={4} 
             className="title-gradient" 
-            style={{ 
-              fontSize: 22, 
-              margin: 0,
-              display: "block"
-            }}
+            style={{ fontSize: 22, margin: 0, display: "block" }}
           >
             Desempenho das Unidades
           </Title>
@@ -89,10 +82,16 @@ export default function VisaoGeral() {
         </Col>
       </Row>
 
-      {/* Grid de Cards */}
+      {/* Grid de Cards - CORRIGIDO AQUI */}
       <Row justify={selectedUnidadeId === "all" ? "start" : "center"} gutter={[24, 24]}>
         {unidadesParaExibir.map((unidade) => (
-          <Col xs={24} md={selectedUnidadeId === "all" ? 12 : 16} lg={selectedUnidadeId === "all" ? 6 : 12} key={getId(unidade)}>
+          <Col 
+            xs={24} 
+            sm={12} 
+            lg={12} 
+            xl={6} // Mudei para lg=12 e xl=6
+            key={getId(unidade)}
+          >
             <CardUnidade unidade={unidade} />
           </Col>
         ))}
