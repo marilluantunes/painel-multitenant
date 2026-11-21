@@ -9,7 +9,7 @@ const { Option } = Select;
 const getId = (unidade) => (typeof unidade?.getId === "function" ? unidade.getId() : unidade?.id);
 const getNome = (unidade) => (typeof unidade?.getNome === "function" ? unidade.getNome() : unidade?.nome);
 
-export default function VisaoGeral() {
+export default function VisaoGeral() { 
   const [selectedUnidadeId, setSelectedUnidadeId] = useState("all");
   const [unidades, setUnidades] = useState([]);
   const [carregando, setCarregando] = useState(true);
@@ -32,7 +32,8 @@ export default function VisaoGeral() {
     return () => { ativo = false; };
   }, []);
 
-  if (carregando) return <Spin tip="Carregando unidades..." style={{ display: "block", marginTop: 50 }} />;
+  // Correção: 'tip' foi substituído por 'description' para remover o aviso do console
+  if (carregando) return <Spin description="Carregando unidades..." style={{ display: "block", marginTop: 50 }} />;
   if (erro) return <Alert type="error" showIcon message="Erro ao carregar unidades" description={erro} />;
 
   const unidadesParaExibir = selectedUnidadeId === "all"
@@ -41,10 +42,9 @@ export default function VisaoGeral() {
 
   return (
     <div>
-      {/* BANNER HERO - Totalmente estilizado pelo index.css */}
+      {/* BANNER HERO */}
       <div className="glass-panel hero-banner">
         <div className="hero-glow"></div>
-        
         <Row align="middle" justify="space-between">
           <Col xs={24}>
             <Title level={2} className="text-claro" style={{ margin: 0, fontWeight: 800 }}>
@@ -57,25 +57,37 @@ export default function VisaoGeral() {
         </Row>
       </div>
 
-      {/* Área de Filtros */}
-      <div className="flex-between" style={{ marginBottom: 24 }}>
-        <Title level={4} className="title-gradient" style={{ fontSize: 22 }}>
-          Desempenho das Unidades
-        </Title>
+      {/* ÁREA DE FILTROS */}
+      <Row justify="space-between" align="middle" style={{ marginBottom: 24 }} gutter={[16, 16]}>
+        <Col xs={24} md={12}>
+          <Title 
+            level={4} 
+            className="title-gradient" 
+            style={{ 
+              fontSize: 22, 
+              margin: 0,
+              display: "block"
+            }}
+          >
+            Desempenho das Unidades
+          </Title>
+        </Col>
         
-        <Select
-          size="large"
-          style={{ width: 300 }}
-          value={selectedUnidadeId}
-          onChange={(value) => setSelectedUnidadeId(value)}
-          className="custom-select-dark" // Usa o estilo escuro do index.css
-        >
-          <Option value="all">Todas as Unidades</Option>
-          {unidades.map((unidade) => (
-            <Option key={getId(unidade)} value={getId(unidade)}>{getNome(unidade)}</Option>
-          ))}
-        </Select>
-      </div>
+        <Col xs={24} md={12} style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Select
+            size="large"
+            style={{ width: 300, maxWidth: "100%" }}
+            value={selectedUnidadeId}
+            onChange={(value) => setSelectedUnidadeId(value)}
+            className="custom-select-dark"
+          >
+            <Option value="all">Todas as Unidades</Option>
+            {unidades.map((unidade) => (
+              <Option key={getId(unidade)} value={getId(unidade)}>{getNome(unidade)}</Option>
+            ))}
+          </Select>
+        </Col>
+      </Row>
 
       {/* Grid de Cards */}
       <Row justify={selectedUnidadeId === "all" ? "start" : "center"} gutter={[24, 24]}>

@@ -82,7 +82,8 @@ export default function Historico() {
     : clientes.filter((cliente) => getField(cliente, "getId", "id") === selectedClienteId);
 
   if (carregando) {
-    return <Spin tip="Carregando histórico..." style={{ display: "block", marginTop: 50 }} />;
+    // CORRIGIDO: 'tip' virou 'description'
+    return <Spin description="Carregando histórico..." style={{ display: "block", marginTop: 50 }} />;
   }
 
   if (erro) {
@@ -171,7 +172,8 @@ export default function Historico() {
                       return {
                         key: `${clienteId}-${index}`,
                         // Visual: A classe base fica no CSS, as cores dinâmicas ficam no JS
-                        dot: (
+                        // CORRIGIDO: 'dot' virou 'icon'
+                        icon: (
                           <div 
                             className="timeline-dot"
                             style={{ 
@@ -184,7 +186,8 @@ export default function Historico() {
                             {icon}
                           </div>
                         ),
-                        children: (
+                        // CORRIGIDO: 'children' virou 'content'
+                        content: (
                           <div style={{ marginTop: 2, marginBottom: 16 }}>
                             <Text className="text-claro" style={{ fontSize: 14, fontWeight: 500, display: "block" }}>
                               {getEventoField(evento, "getTitulo", "titulo")}

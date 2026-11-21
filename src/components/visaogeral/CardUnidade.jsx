@@ -77,7 +77,7 @@ export default function CardUnidade({ unidade }) {
         e.currentTarget.style.boxShadow = "0 10px 30px -10px rgba(0,0,0,0.5)";
         e.currentTarget.style.borderColor = borderGlass;
       }}
-      bodyStyle={{ padding: "24px" }}
+      styles={{ body: { padding: "24px" } }} // <--- CORRIGIDO: bodyStyle virou styles={{ body: ... }}
     >
       
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
@@ -158,7 +158,8 @@ export default function CardUnidade({ unidade }) {
           <Text style={{ fontSize: 13, color: textMuted, fontWeight: 600 }}>FUNIL (90d)</Text>
           <Text strong style={{ color: "#38BDF8", fontSize: 13 }}>Conversão: {conversao}%</Text>
         </div>
-        <Progress percent={conversao} showInfo={false} strokeColor="#38BDF8" trailColor="rgba(255,255,255,0.1)" size={["100%", 8]} strokeLinecap="round" />
+        {/* CORRIGIDO: trailColor virou railColor */}
+        <Progress percent={conversao} showInfo={false} strokeColor="#38BDF8" railColor="rgba(255,255,255,0.1)" size={["100%", 8]} strokeLinecap="round" />
         
         <Row justify="space-between" style={{ marginTop: 12 }}>
           <Col><Text style={{ fontSize: 11, color: textMuted, display: "block" }}>Geradas</Text><strong style={{color: textClaro}}>{funnel?.gerada ?? 0}</strong></Col>

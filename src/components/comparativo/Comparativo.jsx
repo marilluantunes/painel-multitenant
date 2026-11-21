@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Alert, Card, Spin, Table, Typography, Tag, Divider, Row, Col, Statistic } from "antd";
-import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, LabelList, CartesianGrid } from "recharts";
 import { BankOutlined, TeamOutlined, DollarOutlined, WarningOutlined } from "@ant-design/icons";
 import UnidadeDAO from "../../objetos/dao/UnidadeDAO.mjs";
 
@@ -35,7 +35,8 @@ export default function Comparativo() {
     return () => { ativo = false; };
   }, []);
 
-  if (carregando) return <Spin tip="Carregando comparação..." style={{ display: "block", marginTop: 50 }} />;
+  // CORRIGIDO: 'tip' virou 'description'
+  if (carregando) return <Spin description="Carregando comparação..." style={{ display: "block", marginTop: 50 }} />;
   if (erro) return <Alert type="error" showIcon message="Erro ao consultar unidades" description={erro} />;
 
   const dadosGrafico = unidades.map(u => {
@@ -89,7 +90,6 @@ export default function Comparativo() {
       render: (_, registro) => {
         const risco = Number(getField(registro, "getRiscoAbsoluto", "riscoAbsoluto", 0));
         const isAlto = risco > 30;
-        // Exceção: Estilo inline mantido porque a cor é dinâmica baseada no valor (isAlto)
         return (
           <Tag style={{ 
             borderRadius: "6px", 
@@ -109,7 +109,6 @@ export default function Comparativo() {
 
   return (
     <div>
-      {/* BANNER HERO */}
       <div className="glass-panel hero-banner">
         <div className="hero-glow"></div>
         <Title level={2} className="text-claro" style={{ margin: 0, fontWeight: 800 }}>
@@ -120,43 +119,56 @@ export default function Comparativo() {
         </Paragraph>
       </div>
 
-      {/* CARTÕES DE RESUMO (KPIs) */}
       <Row gutter={[16, 16]} style={{ marginBottom: 32 }}>
         <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} className="glass-panel kpi-card">
-            <Statistic title={<span className="text-muted">Total de Unidades</span>} value={unidades.length} valueStyle={{ color: "#F8FAFC", fontWeight: 700 }} prefix={<BankOutlined style={{ color: "#38BDF8", marginRight: 8 }} />} />
+          {/* CORRIGIDO: bordered={false} virou variant="borderless" */}
+          <Card variant="borderless" className="glass-panel kpi-card">
+            {/* CORRIGIDO: valueStyle virou styles={{ content: ... }} */}
+            <Statistic title={<span className="text-muted">Total de Unidades</span>} value={unidades.length} styles={{ content: { color: "#F8FAFC", fontWeight: 700 } }} prefix={<BankOutlined style={{ color: "#38BDF8", marginRight: 8 }} />} />
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} className="glass-panel kpi-card">
-            <Statistic title={<span className="text-muted">Total de Clientes</span>} value={totalClientes} valueStyle={{ color: "#F8FAFC", fontWeight: 700 }} prefix={<TeamOutlined style={{ color: "#1677ff", marginRight: 8 }} />} />
+          <Card variant="borderless" className="glass-panel kpi-card">
+            <Statistic title={<span className="text-muted">Total de Clientes</span>} value={totalClientes} styles={{ content: { color: "#F8FAFC", fontWeight: 700 } }} prefix={<TeamOutlined style={{ color: "#1677ff", marginRight: 8 }} />} />
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} className="glass-panel kpi-card">
-            <Statistic title={<span className="text-muted">Receita Consolidada (90d)</span>} value={totalReceita} valueStyle={{ color: "#F8FAFC", fontWeight: 700 }} prefix={<DollarOutlined style={{ color: "#10b981", marginRight: 8 }} />} formatter={(val) => `R$ ${(val / 1000000).toFixed(2)} Mi`} />
+          <Card variant="borderless" className="glass-panel kpi-card">
+            <Statistic title={<span className="text-muted">Receita Consolidada (90d)</span>} value={totalReceita} styles={{ content: { color: "#F8FAFC", fontWeight: 700 } }} prefix={<DollarOutlined style={{ color: "#10b981", marginRight: 8 }} />} formatter={(val) => `R$ ${(val / 1000000).toFixed(2)} Mi`} />
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <Card bordered={false} className="glass-panel kpi-card">
-            <Statistic title={<span className="text-muted">Risco Total</span>} value={totalRisco} valueStyle={{ color: "#ef4444", fontWeight: 700 }} prefix={<WarningOutlined style={{ color: "#ef4444", marginRight: 8 }} />} />
+          <Card variant="borderless" className="glass-panel kpi-card">
+            <Statistic title={<span className="text-muted">Risco Total</span>} value={totalRisco} styles={{ content: { color: "#ef4444", fontWeight: 700 } }} prefix={<WarningOutlined style={{ color: "#ef4444", marginRight: 8 }} />} />
           </Card>
         </Col>
       </Row>
 
-      {/* GRÁFICO E TABELA */}
-      <Card className="glass-panel main-card" bodyStyle={{ padding: "32px" }}>
+      {/* CORRIGIDO: bodyStyle virou styles={{ body: ... }} */}
+      <Card className="glass-panel main-card" styles={{ body: { padding: "32px 24px" } }}>
         <div style={{ marginBottom: 24 }}>
           <Text className="section-title">Volume de Clientes por Unidade</Text>
           <Text className="section-subtitle">Comparação direta do tamanho das carteiras.</Text>
           
           <div style={{ width: '100%', height: 280 }}>
             <ResponsiveContainer>
-              <BarChart data={dadosGrafico} layout="vertical" margin={{ top: 0, right: 30, left: 20, bottom: 0 }}>
-                <XAxis type="number" hide />
-                <YAxis dataKey="nome" type="category" axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 14, fontWeight: 600 }} width={100} />
+              <BarChart 
+                data={dadosGrafico} 
+                layout="vertical" 
+                margin={{ top: 0, right: 45, left: 0, bottom: 0 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" horizontal={false} vertical={true} stroke="rgba(255,255,255,0.05)" />
                 
-                {/* Recharts exige estilos inline para o Tooltip */}
+                <XAxis type="number" hide />
+                <YAxis 
+                  dataKey="nome" 
+                  type="category" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fill: '#94A3B8', fontSize: 12, fontWeight: 600 }} 
+                  width={85} 
+                />
+                
                 <RechartsTooltip 
                   cursor={{ fill: 'rgba(255,255,255,0.05)' }} 
                   contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.95)', color: '#fff', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 10px 20px rgba(0,0,0,0.5)', backdropFilter: 'blur(10px)' }}
@@ -164,10 +176,18 @@ export default function Comparativo() {
                   formatter={(value) => [`${value} clientes`, 'Total']}
                 />
                 
-                <Bar dataKey="clientes" radius={[0, 8, 8, 0]} barSize={32}>
+                <Bar dataKey="clientes" radius={[0, 8, 8, 0]} barSize={24}>
                   {dadosGrafico.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.cor} />
                   ))}
+                  <LabelList 
+                    dataKey="clientes" 
+                    position="right" 
+                    fill="#F8FAFC" 
+                    fontSize={12} 
+                    fontWeight={700}
+                    offset={8}
+                  />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -188,7 +208,7 @@ export default function Comparativo() {
             rowKey={(u) => getField(u, "getId", "id")} 
             pagination={false} 
             scroll={{ x: true }} 
-            bordered={false}
+            variant="borderless"
             className="custom-table" 
           />
         </div>

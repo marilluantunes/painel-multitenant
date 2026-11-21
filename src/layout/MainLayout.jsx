@@ -16,7 +16,7 @@ export default function MainLayout() {
   return (
     <Layout style={{ minHeight: "100vh", background: "transparent", fontFamily: "'Inter', system-ui, sans-serif", overflow: "hidden" }}>
       
-      {/* --- NOVO FUNDO: CYBER GRID --- */}
+      {/* FUNDO: CYBER GRID */}
       <div style={{ 
         position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh",
         backgroundImage: "linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px)",
@@ -32,13 +32,14 @@ export default function MainLayout() {
         filter: "blur(60px)", zIndex: 0, pointerEvents: "none" 
       }} />
 
-      <div style={{ padding: "16px 48px", display: "flex", justifyContent: "flex-end", gap: "32px", position: "relative", zIndex: 10 }}>
+      {/* TOP BAR */}
+      <div className="top-bar-contacts" style={{ padding: "16px 48px", display: "flex", justifyContent: "flex-end", gap: "32px", position: "relative", zIndex: 10 }}>
         <Text style={{ color: "#94A3B8", fontSize: 12 }}><PhoneOutlined style={{ marginRight: 6 }}/> 061 3221-1035</Text>
         <Text style={{ color: "#94A3B8", fontSize: 12 }}><MailOutlined style={{ marginRight: 6 }}/> comercial@primora.com.br</Text>
       </div>
 
-      {/* Cabeçalho (Glassmorphism) */}
-      <div style={{ 
+      {/* CABEÇALHO FLUTUANTE (Glassmorphism) */}
+      <div className="main-header" style={{ 
         margin: "0 48px", padding: "0 32px", height: "80px", display: "flex", alignItems: "center", 
         background: "rgba(255, 255, 255, 0.03)", 
         backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
@@ -49,26 +50,15 @@ export default function MainLayout() {
       }}>
         
         {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", marginRight: 80 }}>
+        <div className="logo-container" style={{ display: "flex", alignItems: "center", marginRight: 80 }}>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <div style={{ 
-              color: "#FFFFFF", fontSize: "1.6rem", fontWeight: "900", letterSpacing: "-1px",
-              textShadow: "0 0 20px rgba(255, 255, 255, 0.2)" 
-            }}>
+            <div className="logo-text-primora" style={{ color: "#FFFFFF", fontSize: "1.6rem", fontWeight: "900", letterSpacing: "-1px", textShadow: "0 0 20px rgba(255, 255, 255, 0.2)" }}>
               PRIMORA
             </div>
             
-            <div style={{ 
-              width: "3px", height: "26px", 
-              background: "linear-gradient(to bottom, #38BDF8, #3B82F6)", 
-              margin: "0 16px", borderRadius: "2px",
-              boxShadow: "0 0 12px rgba(56, 189, 248, 0.6)"
-            }} />
+            <div className="logo-divider" style={{ width: "3px", height: "26px", background: "linear-gradient(to bottom, #38BDF8, #3B82F6)", margin: "0 16px", borderRadius: "2px", boxShadow: "0 0 12px rgba(56, 189, 248, 0.6)" }} />
 
-            <div style={{ 
-              color: "#38BDF8", fontSize: "1.2rem", fontWeight: "400", 
-              letterSpacing: "4px", textTransform: "uppercase"
-            }}>
+            <div className="logo-text-vetor" style={{ color: "#38BDF8", fontSize: "1.2rem", fontWeight: "400", letterSpacing: "4px", textTransform: "uppercase" }}>
               Vetor
             </div>
           </div>
@@ -81,16 +71,18 @@ export default function MainLayout() {
           selectedKeys={[location.pathname]}
           items={items}
           className="menu-aurora"
+          // O overflowedIndicator é o "..." que aparece quando não cabe tudo
+          overflowedIndicator={<span style={{ color: '#38BDF8', fontSize: 20 }}>...</span>}
           style={{ flex: 1, minWidth: 0, borderBottom: "none", background: "transparent", fontSize: "14px", fontWeight: 500 }}
         />
       </div>
 
-      <Content style={{ padding: "40px 48px", position: "relative", zIndex: 1 }}>
+      {/* CONTEÚDO */}
+      <Content className="main-content" style={{ padding: "40px 48px", position: "relative", zIndex: 1 }}>
         <Outlet />
       </Content>
 
       <Footer style={{ background: "transparent", color: "#64748B", textAlign: "center", padding: "32px", position: "relative", zIndex: 1 }}>
-      
         <div style={{ fontSize: "12px", marginTop: "4px" }}>Protótipo Fictício - Distribuidora Vetor © 2026</div>
       </Footer>
 
