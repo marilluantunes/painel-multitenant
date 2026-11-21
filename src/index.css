@@ -238,3 +238,76 @@ body {
 .custom-table .ant-table-tbody > tr:hover > td {
   background: rgba(255, 255, 255, 0.05) !important;
 }
+
+/* =========================================
+    RESPONSIVIDADE MOBILE (Telas < 768px)
+   ========================================= */
+
+/* Força os títulos das seções a ficarem um embaixo do outro */
+.section-title {
+  display: block !important;
+  margin-bottom: 4px !important;
+}
+.section-subtitle {
+  display: block !important;
+  margin-bottom: 24px !important;
+}
+
+@media (max-width: 768px) {
+  /* Top Bar (Contatos) */   /* Reduziu a margem de 48px para 16px, dando espaço na tela */
+  .top-bar-contacts {
+    padding: 12px 16px !important;
+    gap: 16px !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+  }
+  
+  /* Cabeçalho Flutuante */
+  .main-header {
+    margin: 0 16px !important;
+    padding: 0 16px !important;
+    height: 64px !important;
+  }
+
+  /* Logo */ 
+  /* Diminuiu o espaço do logo de 80px para 16px */
+  .logo-container { 
+    margin-right: 16px !important;
+  }
+
+    /* Diminuiu a fonte do logo e do menu */
+  .logo-text-primora {
+    font-size: 1.2rem !important;
+  }
+  .logo-divider {
+    margin: 0 8px !important;
+    height: 20px !important;
+  }
+  .logo-text-vetor {
+    font-size: 0.9rem !important;
+    letter-spacing: 2px !important;
+  }
+
+  /* Conteúdo das Páginas */
+  .main-content {
+    padding: 24px 16px !important;
+  }
+
+  /* Menu do Ant Design no Celular */
+  .menu-aurora.ant-menu-dark .ant-menu-item {
+    padding: 0 10px !important;
+    font-size: 12px !important;
+    margin: 0 !important;
+  }
+
+  /* Ajustes para os Cards e Títulos no Mobile */
+  .title-gradient {
+    font-size: 20px !important;
+    white-space: normal !important; /* Permite quebrar a linha no celular */
+  }
+
+  /* Ajuste do gráfico de barras no celular */
+  .recharts-wrapper {
+    margin-left: -15px; /* Dá uma margem extra para o texto não cortar */
+  }
+}
