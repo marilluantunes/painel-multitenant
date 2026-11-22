@@ -1,12 +1,313 @@
-* { box-sizing: border-box;
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f0f2f5;
+  font-family: 'Inter', 'Roboto', Arial, sans-serif;
+  background-color: #050510; 
+  color: #F8FAFC; 
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-h3 {
-  margin-top: 0;
+/* Barra de rolagem customizada (Dark Mode) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #050510; 
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1); 
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.4);
+}
+
+/* =========================================
+   2. UTILITÁRIOS DE TEXTO E LAYOUT
+   ========================================= */
+.text-claro { color: #F8FAFC !important; }
+.text-muted { color: #94A3B8 !important; }
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title-gradient {
+  background: linear-gradient(90deg, #FFFFFF 0%, #38BDF8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  margin: 0;
+}
+
+/* =========================================
+   3. EFEITOS DE VIDRO (GLASSMORPHISM)
+   ========================================= */
+.glass-panel {
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
+}
+
+/* Banner Hero */
+.hero-banner {
+  border-radius: 24px;
+  padding: 32px 40px;
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-glow {
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+/* Cards de KPI (Comparativo) */
+.kpi-card {
+  border-radius: 16px;
+  height: 100%;
+}
+
+.main-card {
+  border-radius: 24px;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* Card de Cliente (Histórico) */
+.client-card {
+  height: 100%;
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.6) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+.client-card .ant-card-head {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+.client-card .ant-card-body {
+  padding: 24px 24px 0 24px !important;
+}
+
+/* Card da Unidade (Visão Geral) */
+.unidade-card {
+  height: 100%;
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+  border-top: 4px solid var(--porte-color, #1677ff);
+}
+.unidade-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6), 0 0 20px var(--porte-color, #1677ff)40;
+}
+
+.unidade-icon-box {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-divider {
+  margin: 0 0 16px 0 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* =========================================
+   4. TAGS E COMPONENTES ESPECÍFICOS
+   ========================================= */
+/* Tag de Tenant (Histórico) */
+.tenant-tag {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38BDF8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* Timeline Dot (Histórico) */
+.timeline-dot {
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+/* Tags de Saúde da Carteira (Card Unidade) */
+.tag-health-base { border-radius: 6px; font-weight: 600; }
+.tag-saudavel { border: 1px solid rgba(16, 185, 129, 0.2); background: rgba(16, 185, 129, 0.1); color: #10b981; }
+.tag-atencao { border: 1px solid rgba(245, 158, 11, 0.2); background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+.tag-risco { border: 1px solid rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+.tag-critico { border: 1px solid rgba(217, 70, 239, 0.2); background: rgba(217, 70, 239, 0.1); color: #d946ef; }
+
+/* =========================================
+   5. OVERRIDES DO ANT DESIGN (MENU, SELECT, TABLE)
+   ========================================= */
+/* Menu */
+.menu-aurora.ant-menu-dark .ant-menu-item { 
+  color: #E2E8F0 !important; 
+  transition: all 0.3s ease; 
+  border-radius: 12px; 
+  padding: 0 20px; 
+  margin: 0 4px;
+}
+.menu-aurora.ant-menu-dark .ant-menu-item:hover { 
+  color: #FFFFFF !important; 
+  background: rgba(255, 255, 255, 0.08) !important; 
+}
+.menu-aurora.ant-menu-dark .ant-menu-item-selected { 
+  color: #38BDF8 !important; 
+  background: rgba(56, 189, 248, 0.12) !important; 
+}
+.menu-aurora.ant-menu-dark .ant-menu-item-selected a,
+.menu-aurora.ant-menu-dark .ant-menu-item-selected .anticon { 
+  color: #38BDF8 !important; 
+}
+.menu-aurora.ant-menu-dark .ant-menu-item::after { 
+  display: none !important; 
+}
+
+/* Select Customizado */
+.custom-select-dark .ant-select-selector {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #F8FAFC !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(12px);
+  height: 42px !important;
+  display: flex;
+  align-items: center;
+}
+.custom-select-dark .ant-select-selection-item {
+  color: #F8FAFC !important;
+  font-weight: 500;
+}
+.custom-select-dark .ant-select-arrow { color: #94A3B8 !important; }
+
+.ant-select-dropdown {
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+.ant-select-item-option { color: #E2E8F0 !important; }
+.ant-select-item-option-selected { 
+  background: rgba(56, 189, 248, 0.15) !important; 
+  color: #38BDF8 !important; 
+  font-weight: 600 !important;
+}
+.ant-select-item-option:hover { background: rgba(255, 255, 255, 0.08) !important; }
+
+/* Tabela Customizada */
+.custom-table .ant-table { background: transparent !important; }
+.custom-table .ant-table-thead > tr > th {
+  background: rgba(255, 255, 255, 0.03) !important;
+  color: #94A3B8 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  font-weight: 600;
+}
+.custom-table .ant-table-tbody > tr > td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+.custom-table .ant-table-tbody > tr:hover > td {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* =========================================
+    RESPONSIVIDADE MOBILE (Telas < 768px)
+   ========================================= */
+
+/* Força os títulos das seções a ficarem um embaixo do outro */
+.section-title {
+  display: block !important;
+  margin-bottom: 4px !important;
+}
+.section-subtitle {
+  display: block !important;
+  margin-bottom: 24px !important;
+}
+
+@media (max-width: 768px) {
+  /* Top Bar (Contatos) */   /* Reduziu a margem de 48px para 16px, dando espaço na tela */
+  .top-bar-contacts {
+    padding: 12px 16px !important;
+    gap: 16px !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+  }
+  
+  /* Cabeçalho Flutuante */
+  .main-header {
+    margin: 0 16px !important;
+    padding: 0 16px !important;
+    height: 64px !important;
+  }
+
+  /* Logo */ 
+  /* Diminuiu o espaço do logo de 80px para 16px */
+  .logo-container { 
+    margin-right: 16px !important;
+  }
+
+    /* Diminuiu a fonte do logo e do menu */
+  .logo-text-primora {
+    font-size: 1.2rem !important;
+  }
+  .logo-divider {
+    margin: 0 8px !important;
+    height: 20px !important;
+  }
+  .logo-text-vetor {
+    font-size: 0.9rem !important;
+    letter-spacing: 2px !important;
+  }
+
+  /* Conteúdo das Páginas */
+  .main-content {
+    padding: 24px 16px !important;
+  }
+
+  /* Menu do Ant Design no Celular */
+  .menu-aurora.ant-menu-dark .ant-menu-item {
+    padding: 0 10px !important;
+    font-size: 12px !important;
+    margin: 0 !important;
+  }
+
+  /* Ajustes para os Cards e Títulos no Mobile */
+  .title-gradient {
+    font-size: 20px !important;
+    white-space: normal !important; /* Permite quebrar a linha no celular */
+  }
+
+  /* Ajuste do gráfico de barras no celular */
+  .recharts-wrapper {
+    margin-left: -15px; /* Dá uma margem extra para o texto não cortar */
+  }
 }

@@ -1,26 +1,25 @@
 import { Card, Tag, Typography, Space, Progress, Divider, Row, Col, Tooltip } from "antd";
-import { ShopOutlined, RiseOutlined, InfoCircleOutlined, WarningOutlined } from "@ant-design/icons";
+import { ShopOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { LineChart, Line, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 
 const { Text } = Typography;
 
 export default function CardUnidade({ unidade }) {
-  const getField = (getterName, fieldName, fallback = 0) => {
-    if (typeof unidade?.[getterName] === "function") {
-      return unidade[getterName]();
-    }
-    return unidade?.[fieldName] ?? fallback;
-  };
-
   const formatMoeda = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(val || 0);
   const formatNum = (val) => new Intl.NumberFormat('pt-BR').format(val || 0);
+
+  const getField = (getterName, fieldName, fallback = 0) => {
+    if (typeof unidade?.[getterName] === "function") return unidade[getterName]();
+    return unidade?.[fieldName] ?? fallback;
+  };
 
   const funnel = getField("getFunnel90d", "funnel90d", {});
   const health = getField("getHealthDistribution", "healthDistribution", {});
   const drivers = getField("getRiscoDrivers", "riscoDrivers", []);
-
+  const trend = getField("getEngagementTrend30d", "engagementTrend30d", []);
+  
   const conversao = Math.round(((funnel?.sucesso || 0) / (funnel?.gerada || 1)) * 100);
-  const isRiscoAlto = Number(getField("getRiscoAbsoluto", "riscoAbsoluto", 0)) > 30;
-
+  
   const unidadeNome = getField("getNome", "nome", "Unidade");
   const unidadeId = getField("getId", "id", "");
   const unidadePorte = getField("getPorte", "porte", "");
@@ -28,118 +27,165 @@ export default function CardUnidade({ unidade }) {
   const carteira = Number(getField("getCarteiraTotalClientes", "carteiraTotalClientes", 0));
   const ativos = Number(getField("getActiveUsers7d", "activeUsers7d", 0));
   const eventos7d = Number(getField("getEngagementEvents7d", "engagementEvents7d", 0));
-  const risco = Number(getField("getRiscoAbsoluto", "riscoAbsoluto", 0));
+  const riscoAbsoluto = Number(getField("getRiscoAbsoluto", "riscoAbsoluto", 0));
+
+  // === LÓGICA DE RISCO RELATIVO ===
+  // Calcula a porcentagem de clientes em risco na carteira
+  const taxaRisco = carteira > 0 ? (riscoAbsoluto / carteira) * 100 : 0;
+  
+  // Define o limiar (Threshold) de alerta: 15% da carteira em risco
+  const isRiscoAlto = taxaRisco >= 15; 
+
+  const dadosTrend = trend.map((val, i) => ({ dia: i + 1, valor: val }));
+
+  // Cores baseadas no Porte
+  const temaPorte = {
+    grande: { cor: "#722ed1" },           // Roxo
+    media: { cor: "#1677ff" },            // Azul
+    "media-pequena": { cor: "#fa8c16" },  // Laranja
+    pequena: { cor: "#13c2c2" },          // Ciano/Verde-água
+  };
+  
+  const corPorte = (temaPorte[unidadePorte?.toLowerCase()] || temaPorte["media"]).cor;
+
+  // Cores utilitárias do tema escuro
+  const textClaro = "#F8FAFC";
+  const textMuted = "#94A3B8";
 
   return (
     <Card 
-      hoverable 
-      style={{ 
-        height: "100%", 
-        borderRadius: "12px", 
-        borderTop: `4px solid ${isRiscoAlto ? "#ef4444" : "#1677ff"}`, // Borda vermelha se risco for alto
-        boxShadow: "0 4px 12px rgba(0,0,0,0.05)" 
-      }}
-      bodyStyle={{ padding: "20px" }}
+      className="unidade-card"
+      style={{ "--porte-color": corPorte }} // Passa a cor para o CSS
+      styles={{ body: { padding: "24px" } }}
     >
-      {/* CABEÇALHO: Nome, ID, Porte */}
-      <div style={{ marginBottom: 16 }}>
-        <Space align="center" style={{ marginBottom: 8 }}>
-          <div style={{ background: "#f1f5f9", padding: "8px", borderRadius: "8px" }}>
-            <ShopOutlined style={{ fontSize: 18, color: "#1677ff" }} />
+      
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, gap: "8px" }}>
+        <Space align="start" style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ background: "rgba(255,255,255,0.05)", padding: "10px", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.1)" }}>
+            <ShopOutlined style={{ fontSize: 20, color: "#38BDF8" }} />
           </div>
-          <div>
-            <Text strong style={{ fontSize: 18, color: "#0f172a", display: "block", lineHeight: 1.2 }}>
+          <div style={{ overflow: "hidden" }}>
+            <Text strong style={{ fontSize: 17, color: textClaro, display: "block", lineHeight: 1.2, whiteSpace: "normal", wordBreak: "break-word" }}>
               {unidadeNome}
             </Text>
-            <Text style={{ fontSize: 12, color: "#94a3b8" }}>ID: {unidadeId}</Text>
+            <Text style={{ fontSize: 11, color: textMuted, display: "block", marginTop: 2 }}>ID: {unidadeId}</Text>
           </div>
         </Space>
-        <Tag color="blue" style={{ borderRadius: "4px", fontWeight: 600 }}>
-          Porte: {unidadePorte}
+        
+        <Tag style={{ 
+          borderRadius: "6px", 
+          border: "none", 
+          background: `${corPorte}20`, 
+          color: corPorte, 
+          fontWeight: 700,
+          textTransform: "capitalize",
+          padding: "2px 10px",
+          margin: 0,
+          flexShrink: 0
+        }}>
+          {unidadePorte}
         </Tag>
       </div>
 
-      <Divider style={{ margin: "12px 0", borderColor: "#f1f5f9" }} />
+      <Divider style={{ margin: "0 0 16px 0", borderColor: "rgba(255,255,255,0.08)" }} />
 
-      {/* FINANCEIRO E CARTEIRA */}
-      <Row gutter={16} style={{ marginBottom: 16 }}>
+      <Row gutter={16} style={{ marginBottom: 20 }}>
         <Col span={12}>
-          <Text style={{ fontSize: 11, color: "#64748b", fontWeight: 600, display: "block" }}>RECEITA (90d)</Text>
-          <Text strong style={{ fontSize: 16, color: "#0f172a" }}>{formatMoeda(receita)}</Text>
+          <Text style={{ fontSize: 11, color: textMuted, fontWeight: 600, display: "block", marginBottom: 4, letterSpacing: "0.5px" }}>RECEITA (90d)</Text>
+          <Text strong style={{ fontSize: 18, color: textClaro }}>{formatMoeda(receita)}</Text>
         </Col>
         <Col span={12}>
-          <Text style={{ fontSize: 11, color: "#64748b", fontWeight: 600, display: "block" }}>CARTEIRA</Text>
-          <Text strong style={{ fontSize: 16, color: "#0f172a" }}>
-            {formatNum(carteira)} <span style={{ fontSize: 12, fontWeight: 400, color: "#64748b" }}>clientes</span>
-          </Text>
+          <Text style={{ fontSize: 11, color: textMuted, fontWeight: 600, display: "block", marginBottom: 4, letterSpacing: "0.5px" }}>CARTEIRA</Text>
+          <Text strong style={{ fontSize: 18, color: textClaro }}>{formatNum(carteira)} <span style={{ fontSize: 12, fontWeight: 400, color: textMuted }}>clientes</span></Text>
         </Col>
       </Row>
 
-      {/* ENGAJAMENTO (7 DIAS) */}
-      <div style={{ background: "#f8fafc", padding: "10px", borderRadius: "8px", marginBottom: 16 }}>
-        <Text style={{ fontSize: 11, color: "#64748b", fontWeight: 600, display: "block", marginBottom: 8 }}>ENGAJAMENTO (ÚLTIMOS 7 DIAS)</Text>
-        <Row justify="space-between">
-          <Col>
-            <Text style={{ fontSize: 12, color: "#475569" }}>Usuários Ativos:</Text>
-            <br />
-            <Text strong style={{ fontSize: 14, color: "#0f172a" }}>{formatNum(ativos)}</Text>
-          </Col>
-          <Col style={{ textAlign: "right" }}>
-            <Text style={{ fontSize: 12, color: "#475569" }}>Eventos:</Text>
-            <br />
-            <Text strong style={{ fontSize: 14, color: "#0f172a" }}>{formatNum(eventos7d)}</Text>
-          </Col>
-        </Row>
-      </div>
-
-      {/* FUNIL COMERCIAL (90 DIAS) */}
-      <div style={{ marginBottom: 16 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-          <Text style={{ fontSize: 12, color: "#64748b", fontWeight: 600 }}>FUNIL (90d)</Text>
-          <Text strong style={{ color: "#1677ff", fontSize: 13 }}>Conversão: {conversao}%</Text>
+      {/* Gráfico */}
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+          <div>
+            <Text style={{ fontSize: 12, color: textMuted, display: "block" }}>Ativos (7d)</Text>
+            <Text strong style={{ fontSize: 16, color: textClaro }}>{formatNum(ativos)}</Text>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <Text style={{ fontSize: 12, color: textMuted, display: "block" }}>Eventos (7d)</Text>
+            <Text strong style={{ fontSize: 16, color: textClaro }}>{formatNum(eventos7d)}</Text>
+          </div>
         </div>
-        <Progress percent={conversao} showInfo={false} strokeColor="#1677ff" size={["100%", 6]} />
+
+        <Text style={{ fontSize: 11, color: textMuted, fontWeight: 600, display: "block", marginBottom: 8, letterSpacing: "0.5px" }}>
+          ENGAJAMENTO DOS ÚLTIMOS 30 DIAS
+        </Text>
+
+        {dadosTrend.length > 0 && (
+          <div style={{ height: 60, width: "100%" }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={dadosTrend}>
+                <RechartsTooltip 
+                  contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.95)', color: '#ffffff', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', padding: '8px 12px', boxShadow: '0 10px 20px rgba(0,0,0,0.5)', fontSize: '12px', backdropFilter: 'blur(10px)' }}
+                  itemStyle={{ color: '#38BDF8', fontWeight: 'bold', padding: 0 }}
+                  labelStyle={{ color: '#94A3B8', marginBottom: '4px', fontSize: '11px' }}
+                  cursor={{ stroke: 'rgba(255,255,255,0.2)', strokeWidth: 1, strokeDasharray: '3 3' }}
+                  labelFormatter={(label) => `Dia ${label}`}
+                  formatter={(value) => [`${value}`, 'Eventos']}
+                />
+                <Line type="monotone" dataKey="valor" stroke="#38BDF8" strokeWidth={3} dot={false} activeDot={{ r: 4, fill: "#38BDF8", stroke: "#ffffff", strokeWidth: 2 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </div>
+
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+          <Text style={{ fontSize: 13, color: textMuted, fontWeight: 600 }}>FUNIL (90d)</Text>
+          <Text strong style={{ color: "#38BDF8", fontSize: 13 }}>Conversão: {conversao}%</Text>
+        </div>
+        {/* CORRIGIDO: trailColor virou railColor */}
+        <Progress percent={conversao} showInfo={false} strokeColor="#38BDF8" railColor="rgba(255,255,255,0.1)" size={["100%", 8]} strokeLinecap="round" />
         
-        <Row justify="space-between" style={{ marginTop: 8 }}>
-          <Col><Text style={{ fontSize: 11, color: "#94a3b8" }}>Geradas: <strong style={{color: "#334155"}}>{funnel?.gerada ?? 0}</strong></Text></Col>
-          <Col><Text style={{ fontSize: 11, color: "#94a3b8" }}>Vistas: <strong style={{color: "#334155"}}>{funnel?.vista ?? 0}</strong></Text></Col>
-          <Col><Text style={{ fontSize: 11, color: "#94a3b8" }}>Sucesso: <strong style={{color: "#10b981"}}>{funnel?.sucesso ?? 0}</strong></Text></Col>
-          <Col><Text style={{ fontSize: 11, color: "#94a3b8" }}>Falha: <strong style={{color: "#ef4444"}}>{funnel?.falha ?? 0}</strong></Text></Col>
+        <Row justify="space-between" style={{ marginTop: 12 }}>
+          <Col><Text style={{ fontSize: 11, color: textMuted, display: "block" }}>Geradas</Text><strong style={{color: textClaro}}>{funnel?.gerada ?? 0}</strong></Col>
+          <Col><Text style={{ fontSize: 11, color: textMuted, display: "block" }}>Vistas</Text><strong style={{color: textClaro}}>{funnel?.vista ?? 0}</strong></Col>
+          <Col><Text style={{ fontSize: 11, color: textMuted, display: "block" }}>Sucesso</Text><strong style={{color: "#10b981"}}>{funnel?.sucesso ?? 0}</strong></Col>
+          <Col><Text style={{ fontSize: 11, color: textMuted, display: "block" }}>Falha</Text><strong style={{color: "#ef4444"}}>{funnel?.falha ?? 0}</strong></Col>
         </Row>
       </div>
 
-      <Divider style={{ margin: "12px 0", borderColor: "#f1f5f9" }} />
+      <Divider style={{ margin: "0 0 16px 0", borderColor: "rgba(255,255,255,0.08)" }} />
 
-      {/* SAÚDE DA CARTEIRA */}
       <div style={{ marginBottom: 16 }}>
-        <Text style={{ fontSize: 11, color: "#64748b", fontWeight: 600, display: "block", marginBottom: 8 }}>SAÚDE DA CARTEIRA</Text>
+        <Text style={{ fontSize: 11, color: textMuted, fontWeight: 600, display: "block", marginBottom: 8, letterSpacing: "0.5px" }}>SAÚDE DA CARTEIRA</Text>
         <Space size="small" wrap>
-          <Tag color="success">Saudável: {health?.saudavel ?? 0}</Tag>
-          <Tag color="warning">Atenção: {health?.atencao ?? 0}</Tag>
-          <Tag color="error">Risco: {health?.risco ?? 0}</Tag>
-          <Tag color="magenta">Crítico: {health?.critico ?? 0}</Tag>
+          <Tag style={{ borderRadius: "6px", border: "1px solid rgba(16, 185, 129, 0.2)", background: "rgba(16, 185, 129, 0.1)", color: "#10b981" }}>Saudável: {health?.saudavel ?? 0}</Tag>
+          <Tag style={{ borderRadius: "6px", border: "1px solid rgba(245, 158, 11, 0.2)", background: "rgba(245, 158, 11, 0.1)", color: "#f59e0b" }}>Atenção: {health?.atencao ?? 0}</Tag>
+          <Tag style={{ borderRadius: "6px", border: "1px solid rgba(239, 68, 68, 0.2)", background: "rgba(239, 68, 68, 0.1)", color: "#ef4444" }}>Risco: {health?.risco ?? 0}</Tag>
+          <Tag style={{ borderRadius: "6px", border: "1px solid rgba(217, 70, 239, 0.2)", background: "rgba(217, 70, 239, 0.1)", color: "#d946ef" }}>Crítico: {health?.critico ?? 0}</Tag>
         </Space>
       </div>
 
-      {/* RISCO E MOTIVOS */}
+      {/* RISCO RELATIVO (Nova Métrica) */}
       <div style={{ 
-        background: isRiscoAlto ? "#fef2f2" : "#f8fafc", 
-        padding: "12px", 
-        borderRadius: "8px", 
-        border: `1px solid ${isRiscoAlto ? "#fecaca" : "#e2e8f0"}` 
+        background: isRiscoAlto ? "rgba(239, 68, 68, 0.08)" : "rgba(255,255,255,0.03)", 
+        padding: "16px", 
+        borderRadius: "12px", 
+        border: `1px solid ${isRiscoAlto ? "rgba(239, 68, 68, 0.3)" : "rgba(255,255,255,0.08)"}` 
       }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-          <Text style={{ fontSize: 12, color: "#64748b", fontWeight: 600 }}>Risco Absoluto</Text>
-          <Text strong style={{ fontSize: 16, color: isRiscoAlto ? "#ef4444" : "#0f172a" }}>
-            {risco} contas
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Text style={{ fontSize: 13, color: isRiscoAlto ? "#fca5a5" : textMuted, fontWeight: 600 }}>
+            Risco na Carteira
+          </Text>
+          <Text strong style={{ fontSize: 18, color: isRiscoAlto ? "#ef4444" : textClaro }}>
+            {taxaRisco.toFixed(1)}%
+            <span style={{ fontSize: 12, fontWeight: 400, color: isRiscoAlto ? "#fca5a5" : textMuted, marginLeft: 4 }}>
+              ({riscoAbsoluto} contas)
+            </span>
           </Text>
         </div>
-        
-        {/* Tooltip mostrando o motivo do risco */}
         {Array.isArray(drivers) && drivers.length > 0 && (
-          <Tooltip title={drivers.join(" | ")}>
-            <Text style={{ fontSize: 11, color: "#94a3b8", display: "flex", alignItems: "center", gap: 4 }}>
-              <InfoCircleOutlined /> Motivo do risco (passe o mouse)
+          <Tooltip title={drivers.join(" | ")} color="rgba(15, 23, 42, 0.95)">
+            <Text style={{ fontSize: 12, color: textMuted, display: "flex", alignItems: "center", gap: 6, cursor: "help", marginTop: 6 }}>
+              <InfoCircleOutlined /> Motivo do risco
             </Text>
           </Tooltip>
         )}
